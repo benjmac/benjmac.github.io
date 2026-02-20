@@ -1,0 +1,16 @@
+.work-experience {
+  .header-container {
+    display: flex;
+    justify-content: center;
+  }
+
+  .ui.items {
+    .item {
+      padding-bottom: 17px;
+    }
+
+    .ui.tiny.image {
+      max-width: 100px !important;
+    }
+  }
+}

@@ -1,0 +1,52 @@
+.skills-container {
+  padding-bottom: 15px;
+
+  h2 {
+    padding-left: 10px;
+  }
+
+  .skills-content-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    .skill-container {
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      padding: 8px;
+
+      .skill-img {
+        height: 100px;
+        width: 100px;
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 742px) {
+  .skills-container {
+    .skills-content-container {
+      justify-content: center;
+    }
+  }
+
+  // These two below are to center the headers in small screen size
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  h2 {
+    padding-left: 0 !important;
+    width: min-content;
+  }
+}

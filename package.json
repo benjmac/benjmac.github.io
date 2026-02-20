@@ -1,0 +1,70 @@
+{
+  "name": "benjmac.github.io",
+  "version": "1.0.0",
+  "description": "Ben's personal site",
+  "engines": {
+    "node": ">=14"
+  },
+  "main": "index.js",
+  "scripts": {
+    "build-client": "webpack",
+    "build-client-watch": "NODE_ENV='development' webpack -w",
+    "start": "serve public",
+    "predeploy": "npm run build-client",
+    "deploy": "gh-pages -d public",
+    "lint": "eslint ./ --ignore-path .gitignore",
+    "lint-fix": "npm run lint -- --fix",
+    "prettify": "prettier --write \"**/*.{js,jsx,json,css,scss,md}\"",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "prettier --write",
+      "npm run lint-fix"
+    ],
+    "*.{css,scss,json,md}": [
+      "prettier --write"
+    ]
+  },
+  "author": "benjmac",
+  "homepage": "https://benjmac.github.io",
+  "dependencies": {
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-router-dom": "^5.3.4",
+    "react-sizeme": "^3.0.1",
+    "semantic-ui-css": "2.4.1",
+    "semantic-ui-react": "2.0.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.3",
+    "@babel/plugin-proposal-class-properties": "7.4.0",
+    "@babel/plugin-proposal-decorators": "7.4.0",
+    "@babel/plugin-proposal-export-namespace-from": "7.2.0",
+    "@babel/plugin-proposal-function-sent": "7.2.0",
+    "@babel/plugin-proposal-json-strings": "7.2.0",
+    "@babel/plugin-proposal-numeric-separator": "7.2.0",
+    "@babel/plugin-proposal-throw-expressions": "7.2.0",
+    "@babel/plugin-syntax-dynamic-import": "7.2.0",
+    "@babel/plugin-syntax-import-meta": "7.2.0",
+    "@babel/polyfill": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/eslint-parser": "^7.26.5",
+    "babel-loader": "^9.2.1",
+    "css-loader": "^7.1.4",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react": "^7.37.4",
+    "gh-pages": "^6.3.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.0.0",
+    "prettier": "^3.5.0",
+    "sass": "^1.97.3",
+    "sass-loader": "^16.0.7",
+    "serve": "^14.2.5",
+    "style-loader": "^4.0.0",
+    "webpack": "^5.105.2",
+    "webpack-cli": "^5.1.4"
+  }
+}
