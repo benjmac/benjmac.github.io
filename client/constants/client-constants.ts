@@ -1,4 +1,6 @@
-export default {
+import {ClientConstants} from '../../types'
+
+const constants: ClientConstants = {
   routes: {
     aboutMe: '/about',
     resume: '/resume',
@@ -13,3 +15,5 @@ export default {
   },
   shiftMaxWidth: 660,
 }
+
+export default constants

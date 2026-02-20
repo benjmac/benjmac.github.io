@@ -7,18 +7,19 @@
   },
   "main": "index.js",
   "scripts": {
-    "build-client": "webpack",
+    "clean": "rm -f public/bundle.js public/bundle.js.LICENSE.txt public/style.css",
+    "build-client": "npm run clean && webpack",
     "build-client-watch": "NODE_ENV='development' webpack -w",
     "start": "serve public",
     "predeploy": "npm run build-client",
     "deploy": "gh-pages -d public",
     "lint": "eslint ./ --ignore-path .gitignore",
     "lint-fix": "npm run lint -- --fix",
-    "prettify": "prettier --write \"**/*.{js,jsx,json,css,scss,md}\"",
+    "prettify": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,scss,md}\"",
     "prepare": "husky"
   },
   "lint-staged": {
-    "*.{js,jsx}": [
+    "*.{ts,tsx,js,jsx}": [
       "prettier --write",
       "npm run lint-fix"
     ],
@@ -38,20 +39,13 @@
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",
-    "@babel/plugin-proposal-class-properties": "7.4.0",
-    "@babel/plugin-proposal-decorators": "7.4.0",
-    "@babel/plugin-proposal-export-namespace-from": "7.2.0",
-    "@babel/plugin-proposal-function-sent": "7.2.0",
-    "@babel/plugin-proposal-json-strings": "7.2.0",
-    "@babel/plugin-proposal-numeric-separator": "7.2.0",
-    "@babel/plugin-proposal-throw-expressions": "7.2.0",
-    "@babel/plugin-syntax-dynamic-import": "7.2.0",
-    "@babel/plugin-syntax-import-meta": "7.2.0",
     "@babel/polyfill": "^7.4.3",
     "@babel/preset-env": "^7.4.3",
-    "@babel/preset-react": "^7.0.0",
-    "@babel/eslint-parser": "^7.26.5",
-    "babel-loader": "^9.2.1",
+    "@types/react": "^16.14.69",
+    "@types/react-dom": "^16.9.25",
+    "@types/react-router-dom": "^5.3.3",
+    "@typescript-eslint/eslint-plugin": "^8.56.0",
+    "@typescript-eslint/parser": "^8.56.0",
     "css-loader": "^7.1.4",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^9.1.0",
@@ -64,6 +58,8 @@
     "sass-loader": "^16.0.7",
     "serve": "^14.2.5",
     "style-loader": "^4.0.0",
+    "ts-loader": "^9.5.4",
+    "typescript": "^5.9.3",
     "webpack": "^5.105.2",
     "webpack-cli": "^5.1.4"
   }

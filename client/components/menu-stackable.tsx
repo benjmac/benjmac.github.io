@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import {Link, useLocation} from 'react-router-dom'
 
-import sizeMe from 'react-sizeme'
+import sizeMe, {SizeMeProps} from 'react-sizeme'
 
 import {Menu, Dropdown} from 'semantic-ui-react'
 
@@ -36,7 +36,7 @@ const setDefault = () => {
   return defaultItem
 }
 
-export const MenuStackable = ({size}) => {
+export const MenuStackable: React.FC<SizeMeProps> = ({size}) => {
   // Menu items refs
   const menuItems = constants.menuItems
   // Links refs
@@ -67,13 +67,13 @@ export const MenuStackable = ({size}) => {
     }
   }
 
-  const invertedMenuItemSelected = (item) => {
+  const invertedMenuItemSelected = (item: string) => {
     setActiveItem(item)
     scrollToTop()
   }
 
   // Sets active item in tool bar and then hides show menu
-  const sideBarItemSelected = (item) => {
+  const sideBarItemSelected = (item: string) => {
     setActiveItem(item)
     setShowNavMenu(false)
     scrollToTop()
@@ -81,7 +81,7 @@ export const MenuStackable = ({size}) => {
 
   return (
     <div>
-      {size && size.width > constants.shiftMaxWidth ? (
+      {size?.width != null && size.width > constants.shiftMaxWidth ? (
         <div className="ui fixed inverted menu">
           <div className="ui container">
             <Menu.Item

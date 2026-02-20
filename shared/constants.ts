@@ -1,4 +1,6 @@
-const technoligiesAndSkills = {
+import {TechnologiesAndSkills, WorkExperienceItem, Content} from '../types'
+
+const technoligiesAndSkills: TechnologiesAndSkills = {
   proficient: [
     {
       skillName: 'JavaScript',
@@ -212,7 +214,7 @@ const technoligiesAndSkills = {
   ],
 }
 
-const workExperience = [
+const workExperience: WorkExperienceItem[] = [
   {
     image: 'images/peloton.png',
     header:
@@ -370,11 +372,7 @@ const workExperience = [
   },
 ]
 
-const content = {
+export const content: Content = {
   technoligiesAndSkills,
   workExperience,
-}
-
-module.exports = {
-  content,
 }

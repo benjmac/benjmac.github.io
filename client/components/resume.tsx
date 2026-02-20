@@ -12,7 +12,6 @@ export const Resume = () => {
         <embed
           src="BenjaminMcCainResume.pdf"
           type="application/pdf"
-          scrolling="auto"
           height="100%"
           width="100%"
         />

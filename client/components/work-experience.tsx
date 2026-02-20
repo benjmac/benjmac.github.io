@@ -3,13 +3,14 @@ import React, {useContext} from 'react'
 import {Item, List} from 'semantic-ui-react'
 
 import {ContentContext} from '../state/content'
+import {WorkExperienceItem} from '../../types'
 
 import '../styles/work-experience.scss'
 
 /**
  * WORK EXPERIENCE ITEM COMPONENT
  */
-export const workExperienceItemContent = (role) => {
+export const workExperienceItemContent = (role: WorkExperienceItem) => {
   return (
     <Item key={`${role.header}-${role.meta}`}>
       <Item.Image size="tiny" src={role.image} />

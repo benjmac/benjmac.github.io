@@ -1,3 +1,4 @@
+/** @type {import('webpack').Configuration} */
 const isDev = process.env.NODE_ENV === 'development'
 const path = require('path')
 
@@ -5,7 +6,7 @@ module.exports = {
   mode: isDev ? 'development' : 'production',
   entry: [
     '@babel/polyfill', // enables async-await
-    './client/index.js',
+    './client/index.tsx',
   ],
   output: {
     path: path.resolve(__dirname, 'public'),
@@ -13,7 +14,7 @@ module.exports = {
     publicPath: '',
   },
   resolve: {
-    extensions: ['.js', '.jsx'],
+    extensions: ['.ts', '.tsx', '.js', '.jsx'],
   },
   devtool: isDev ? 'source-map' : false,
   watchOptions: {
@@ -54,9 +55,9 @@ module.exports = {
         },
       },
       {
-        test: /\.jsx?$/,
+        test: /\.tsx?$/,
         exclude: /node_modules/,
-        loader: 'babel-loader',
+        loader: 'ts-loader',
       },
     ],
   },

@@ -1,13 +1,14 @@
 import React, {useContext} from 'react'
 
 import {ContentContext} from '../state/content'
+import {Skill} from '../../types'
 
 import '../styles/technoligies.scss'
 
 /**
  * SKILL IMAGE COMPONENT
  */
-export const skillContent = (skill) => {
+export const skillContent = (skill: Skill) => {
   return (
     <div key={skill.skillName} className="skill-container">
       <a href={skill.link} target="_blank" rel="noreferrer">
