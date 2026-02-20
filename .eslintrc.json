@@ -1,0 +1,27 @@
+{
+  "root": true,
+  "parser": "@babel/eslint-parser",
+  "parserOptions": {
+    "requireConfigFile": false,
+    "babelOptions": {
+      "presets": ["@babel/preset-react"]
+    }
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "extends": ["eslint:recommended", "plugin:react/recommended", "prettier"],
+  "rules": {
+    "semi": 0,
+    "react/prop-types": 0,
+    "react/no-unescaped-entities": 0,
+    "react/no-unknown-property": ["error", {"ignore": ["scrolling"]}]
+  }
+}
