@@ -1,0 +1,23 @@
+/*
+ * Tailwind CSS — chat widget only.
+ *
+ * @tailwind base is intentionally omitted.
+ * Preflight (the CSS reset) would conflict with Semantic UI if injected globally.
+ * All classes are prefixed with `tw-` (see tailwind.config.js) so nothing
+ * outside the chat widget is ever affected.
+ */
+
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * iOS Safari (and all iOS browsers — they all use WebKit) zooms in on any
+ * input/textarea with font-size < 16px. This rule prevents that globally
+ * for touch devices without affecting desktop layout.
+ */
+@media (hover: none) and (pointer: coarse) {
+  input,
+  textarea {
+    font-size: 16px !important;
+  }
+}

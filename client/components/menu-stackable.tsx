@@ -1,9 +1,17 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {Link, useLocation} from 'react-router-dom'
 
-import sizeMe, {SizeMeProps} from 'react-sizeme'
-
 import {Menu, Dropdown} from 'semantic-ui-react'
+
+const useWindowWidth = () => {
+  const [width, setWidth] = useState(window.innerWidth)
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+  return width
+}
 
 import constants from '../constants/client-constants'
 
@@ -36,7 +44,8 @@ const setDefault = () => {
   return defaultItem
 }
 
-export const MenuStackable: React.FC<SizeMeProps> = ({size}) => {
+export const MenuStackable: React.FC = () => {
+  const width = useWindowWidth()
   // Menu items refs
   const menuItems = constants.menuItems
   // Links refs
@@ -81,7 +90,7 @@ export const MenuStackable: React.FC<SizeMeProps> = ({size}) => {
 
   return (
     <div>
-      {size?.width != null && size.width > constants.shiftMaxWidth ? (
+      {width > constants.shiftMaxWidth ? (
         <div className="ui fixed inverted menu">
           <div className="ui container">
             <Menu.Item
@@ -229,4 +238,4 @@ export const MenuStackable: React.FC<SizeMeProps> = ({size}) => {
   )
 }
 
-export default sizeMe()(MenuStackable)
+export default MenuStackable

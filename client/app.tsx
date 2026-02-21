@@ -1,24 +1,28 @@
 import React from 'react'
 
-import {MenuStackable} from './components'
+import {MenuStackable, ChatWidget} from './components'
 import {ContentContextProvider} from './state/content'
+import {ChatRuntimeProvider} from './state/chat-runtime'
 import Routes from './routes'
 
 import './styles/app.scss'
 
 const App = () => {
   return (
-    <div className="app-container">
-      <ContentContextProvider>
-        <MenuStackable />
-        <div
-          className="content-body"
-          style={{height: 'inherit', width: 'inherit'}}
-        >
-          <Routes />
-        </div>
-      </ContentContextProvider>
-    </div>
+    <ChatRuntimeProvider>
+      <div className="app-container">
+        <ContentContextProvider>
+          <MenuStackable />
+          <div
+            className="content-body"
+            style={{height: 'inherit', width: 'inherit'}}
+          >
+            <Routes />
+          </div>
+          <ChatWidget />
+        </ContentContextProvider>
+      </div>
+    </ChatRuntimeProvider>
   )
 }
 

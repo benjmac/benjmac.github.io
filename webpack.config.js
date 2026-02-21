@@ -39,6 +39,9 @@ module.exports = {
               },
             },
           },
+          // postcss-loader runs Tailwind (scoped to chat widget via tailwind.config.js)
+          // Safe on all CSS files — no-ops on files without @tailwind directives
+          'postcss-loader',
         ],
       },
       {
