@@ -1,6 +1,6 @@
-export {default as AboutMe} from './about'
-export {default as ChatWidget} from './chat-widget'
-export {default as MenuStackable} from './menu-stackable'
-export {default as Resume} from './resume'
-export {default as TechnicalSkills} from './technical-skills'
-export {default as WorkExperience} from './work-experience'
+export {default as AboutMe} from './about';
+export {default as ChatWidget} from './chat-widget';
+export {default as MenuStackable} from './menu-stackable';
+export {default as Resume} from './resume';
+export {default as TechnicalSkills} from './technical-skills';
+export {default as WorkExperience} from './work-experience';

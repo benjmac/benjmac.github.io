@@ -3,7 +3,7 @@
 }
 
 .ui.top.attached.menu {
-  background: #1b1c1d;
+  background: var(--color-site-dark);
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 1);
   border: none;
   border-radius: 0;
@@ -24,7 +24,7 @@
   }
 
   .menu.transition {
-    background: #1b1c1d;
+    background: var(--color-site-dark);
     a {
       color: rgba(255, 255, 255, 0.9) !important;
     }

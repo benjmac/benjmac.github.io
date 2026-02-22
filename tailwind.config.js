@@ -19,16 +19,17 @@ module.exports = {
 
   theme: {
     extend: {
-      // Site palette
+      // Site palette — values reference CSS custom properties defined in app.scss
+      // so the entire palette can be changed from one place.
       colors: {
-        'site-dark': '#1b1c1d',
-        'site-panel': '#212224',
-        'site-msg-bot': '#2a2b2d',
-        'site-msg-user': '#3d6bce',
-        'site-input': '#2e2f31',
-        'site-accent': '#4a7eff',
-        'site-accent-hover': '#5a8fff',
-        'site-online': '#4caf82',
+        'site-dark': 'var(--color-site-dark)',
+        'site-panel': 'var(--color-site-panel)',
+        'site-msg-bot': 'var(--color-site-msg-bot)',
+        'site-msg-user': 'var(--color-site-msg-user)',
+        'site-input': 'var(--color-site-input)',
+        'site-accent': 'var(--color-site-accent)',
+        'site-accent-hover': 'var(--color-site-accent-hover)',
+        'site-online': 'var(--color-site-online)',
       },
       // Custom animations for panel open/close and message appearance
       animation: {
@@ -46,6 +47,9 @@ module.exports = {
         // Button jelly + glow combo — durations driven by CSS vars
         'bubble-alive':
           'blob-morph var(--blob-period, 5s) ease-in-out infinite, glow-pulse var(--glow-period, 2.5s) ease-in-out infinite',
+        shake: 'shake 0.4s ease',
+        // Subtle pulsing blue ring on the button while idle — signals AI-powered without distracting motion
+        'sparkle-idle-glow': 'sparkle-idle-glow 4s ease-in-out infinite',
       },
       keyframes: {
         'panel-in': {
@@ -91,6 +95,26 @@ module.exports = {
           '60%': {borderRadius: '55% 45% 60% 40% / 40% 60% 50% 50%'},
           '80%': {borderRadius: '45% 55% 40% 60% / 60% 40% 55% 45%'},
         },
+        // Quick horizontal shake — triggered when the user hits the char limit
+        shake: {
+          '0%, 100%': {transform: 'translateX(0)'},
+          '15%': {transform: 'translateX(-5px)'},
+          '30%': {transform: 'translateX(5px)'},
+          '45%': {transform: 'translateX(-4px)'},
+          '60%': {transform: 'translateX(4px)'},
+          '75%': {transform: 'translateX(-2px)'},
+          '90%': {transform: 'translateX(2px)'},
+        },
+        // Idle button: box-shadow pulse on overlay div — clearly visible but calm
+        'sparkle-idle-glow': {
+          '0%, 100%': {
+            boxShadow: '0 0 0 1px rgba(74,127,255,0.06)',
+          },
+          '50%': {
+            boxShadow:
+              '0 0 0 6px rgba(74,127,255,0.25), 0 0 18px rgba(74,127,255,0.18)',
+          },
+        },
         // Breathing glow ring that expands outward and fades
         'glow-pulse': {
           '0%, 100%': {
@@ -105,4 +129,4 @@ module.exports = {
       },
     },
   },
-}
+};

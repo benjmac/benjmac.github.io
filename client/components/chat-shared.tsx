@@ -1,72 +1,108 @@
-/**
- * chat-shared.tsx
- *
- * Message components and thread body shared between mobile and desktop layouts.
- * `size` prop lets each layout bake in its own font/spacing without ternaries.
- */
-
-import React from 'react'
+import React from 'react';
 import {
   ComposerPrimitive,
   MessagePrimitive,
   ThreadPrimitive,
   useAui,
   useAuiState,
-} from '@assistant-ui/react'
-import {Send} from 'lucide-react'
+} from '@assistant-ui/react';
+import {Send} from 'lucide-react';
+import {MAX_CHAT_INPUT_LENGTH} from '../constants/client-constants';
 
-// ── Starter prompt strings ──────────────────────────────────────────────────
+export const OnlineIndicator: React.FC<{textOpacity?: string}> = ({
+  textOpacity = 'tw-text-white/50',
+}) => (
+  <div className="tw-flex tw-items-center tw-gap-1 tw-mt-0.5">
+    <span
+      className="tw-w-1.5 tw-h-1.5 tw-rounded-full tw-bg-site-online tw-animate-pulse"
+      style={{boxShadow: '0 0 6px var(--color-site-online-glow)'}}
+    />
+    <span className={`tw-text-[11px] ${textOpacity}`}>Online</span>
+  </div>
+);
+
 export const STARTER_PROMPTS = [
   'Tell me about your experience',
   'What tech do you work with?',
   'Are you available for hire?',
-]
+];
 
-// ── Size variants ───────────────────────────────────────────────────────────
-type Size = 'sm' | 'lg'
+type Layout = 'mobile' | 'desktop';
 
-// ── Starter prompts ─────────────────────────────────────────────────────────
+const styles = {
+  mobile: {
+    starterContainer:
+      'tw-flex tw-flex-col tw-items-center tw-text-center tw-px-6 tw-gap-4 tw-justify-center tw-flex-1 tw-py-6',
+    starterText:
+      'tw-text-[16px] tw-text-white/50 tw-leading-relaxed tw-max-w-[300px] tw-m-0',
+    promptButton:
+      'tw-text-[16px] tw-py-3.5 tw-px-5 tw-bg-site-msg-bot tw-border tw-border-white/[0.08] tw-rounded-[20px] tw-text-white/90 tw-cursor-pointer tw-text-left tw-transition-all tw-duration-150 hover:tw-bg-white/[0.08] hover:tw-border-site-accent/40 hover:tw-translate-x-0.5 tw-outline-none',
+    userMsg:
+      'tw-text-[17px] tw-max-w-[82%] tw-px-4 tw-py-2.5 tw-bg-site-msg-user tw-rounded-[16px] tw-rounded-br-[4px] tw-text-white tw-leading-relaxed tw-break-words',
+    assistantAvatar:
+      'tw-w-8 tw-h-8 tw-rounded-full tw-bg-site-accent tw-flex tw-items-center tw-justify-center tw-text-white tw-font-bold tw-text-[13px] tw-shrink-0 tw-mb-0.5',
+    typingBubble:
+      'tw-flex tw-items-center tw-gap-1.5 tw-py-3 tw-px-4 tw-bg-site-msg-bot tw-rounded-[16px] tw-rounded-bl-[4px]',
+    typingDot: 'tw-w-2 tw-h-2 tw-rounded-full tw-bg-white/40 tw-animate-bounce',
+    botMsg:
+      'tw-text-[17px] tw-max-w-[82%] tw-px-4 tw-py-2.5 tw-bg-site-msg-bot tw-rounded-[16px] tw-rounded-bl-[4px] tw-text-white/90 tw-leading-relaxed tw-break-words',
+    charCount: 'tw-text-[13px]',
+    viewport: 'tw-px-4 tw-py-4 tw-gap-4',
+    composerPill: 'tw-pl-5 tw-pr-2 tw-py-2',
+    composerInput: 'tw-text-[17px] tw-max-h-32',
+    sendButton: 'tw-w-10 tw-h-10',
+    sendIconSize: 16,
+  },
+  desktop: {
+    starterContainer:
+      'tw-flex tw-flex-col tw-items-center tw-text-center tw-pt-8 tw-px-4 tw-gap-4',
+    starterText:
+      'tw-text-[13px] tw-text-white/50 tw-leading-relaxed tw-max-w-[300px] tw-m-0',
+    promptButton:
+      'tw-text-[12.5px] tw-py-2 tw-px-4 tw-bg-site-msg-bot tw-border tw-border-white/[0.08] tw-rounded-[20px] tw-text-white/90 tw-cursor-pointer tw-text-left tw-transition-all tw-duration-150 hover:tw-bg-white/[0.08] hover:tw-border-site-accent/40 hover:tw-translate-x-0.5 tw-outline-none',
+    userMsg:
+      'tw-text-[13.5px] tw-max-w-[78%] tw-px-3 tw-py-2 tw-bg-site-msg-user tw-rounded-[14px] tw-rounded-br-[4px] tw-text-white tw-leading-relaxed tw-break-words',
+    assistantAvatar:
+      'tw-w-7 tw-h-7 tw-rounded-full tw-bg-site-accent tw-flex tw-items-center tw-justify-center tw-text-white tw-font-bold tw-text-[11px] tw-shrink-0 tw-mb-0.5',
+    typingBubble:
+      'tw-flex tw-items-center tw-gap-1 tw-py-2.5 tw-px-3 tw-bg-site-msg-bot tw-rounded-[14px] tw-rounded-bl-[4px]',
+    typingDot:
+      'tw-w-1.5 tw-h-1.5 tw-rounded-full tw-bg-white/35 tw-animate-bounce',
+    botMsg:
+      'tw-text-[13.5px] tw-max-w-[78%] tw-px-3 tw-py-2 tw-bg-site-msg-bot tw-rounded-[14px] tw-rounded-bl-[4px] tw-text-white/90 tw-leading-relaxed tw-break-words',
+    charCount: 'tw-text-[11px]',
+    viewport: 'tw-px-3 tw-py-4 tw-gap-3',
+    composerPill: 'tw-pl-4 tw-pr-1.5 tw-py-1.5',
+    composerInput: 'tw-text-[15px] tw-max-h-24',
+    sendButton: 'tw-w-8 tw-h-8',
+    sendIconSize: 14,
+  },
+} as const satisfies Record<Layout, Record<string, string | number>>;
+
+const AVATAR_CLASS =
+  'tw-w-14 tw-h-14 tw-rounded-full tw-bg-site-accent tw-flex tw-items-center tw-justify-center tw-text-white tw-font-bold tw-text-xl tw-shadow-[0_4px_16px_rgba(74,127,255,0.35)]';
+
 interface StarterPromptsProps {
-  size: Size
+  layout: Layout;
 }
 
-export const StarterPrompts: React.FC<StarterPromptsProps> = ({size}) => {
-  const aui = useAui()
+export const StarterPrompts: React.FC<StarterPromptsProps> = ({layout}) => {
+  const aui = useAui();
 
   const handlePrompt = (prompt: string) => {
     aui.thread().append({
       role: 'user',
       content: [{type: 'text', text: prompt}],
-    })
-  }
+    });
+  };
 
-  const isLg = size === 'lg'
+  const s = styles[layout];
 
   return (
-    <div
-      className={
-        isLg
-          ? 'tw-flex tw-flex-col tw-items-center tw-text-center tw-px-6 tw-gap-4 tw-justify-center tw-flex-1 tw-py-6'
-          : 'tw-flex tw-flex-col tw-items-center tw-text-center tw-pt-8 tw-px-4 tw-gap-4'
-      }
-    >
-      <div
-        className={
-          isLg
-            ? 'tw-w-14 tw-h-14 tw-rounded-full tw-bg-site-accent tw-flex tw-items-center tw-justify-center tw-text-white tw-font-bold tw-text-xl tw-shadow-[0_4px_16px_rgba(74,127,255,0.35)]'
-            : 'tw-w-14 tw-h-14 tw-rounded-full tw-bg-site-accent tw-flex tw-items-center tw-justify-center tw-text-white tw-font-bold tw-text-xl tw-shadow-[0_4px_16px_rgba(74,127,255,0.35)]'
-        }
-      >
-        B
-      </div>
+    <div className={s.starterContainer}>
+      <div className={AVATAR_CLASS}>B</div>
 
-      <p
-        className={
-          isLg
-            ? 'tw-text-[16px] tw-text-white/50 tw-leading-relaxed tw-max-w-[300px] tw-m-0'
-            : 'tw-text-[13px] tw-text-white/50 tw-leading-relaxed tw-max-w-[300px] tw-m-0'
-        }
-      >
+      <p className={s.starterText}>
         Hey there! I&apos;m Ben&apos;s assistant. Ask me anything about his
         work, skills, or availability.
       </p>
@@ -75,11 +111,7 @@ export const StarterPrompts: React.FC<StarterPromptsProps> = ({size}) => {
         {STARTER_PROMPTS.map((prompt) => (
           <button
             key={prompt}
-            className={
-              isLg
-                ? 'tw-text-[16px] tw-py-3.5 tw-px-5 tw-bg-site-msg-bot tw-border tw-border-white/[0.08] tw-rounded-[20px] tw-text-white/90 tw-cursor-pointer tw-text-left tw-transition-all tw-duration-150 hover:tw-bg-white/[0.08] hover:tw-border-site-accent/40 hover:tw-translate-x-0.5 tw-outline-none'
-                : 'tw-text-[12.5px] tw-py-2 tw-px-4 tw-bg-site-msg-bot tw-border tw-border-white/[0.08] tw-rounded-[20px] tw-text-white/90 tw-cursor-pointer tw-text-left tw-transition-all tw-duration-150 hover:tw-bg-white/[0.08] hover:tw-border-site-accent/40 hover:tw-translate-x-0.5 tw-outline-none'
-            }
+            className={s.promptButton}
             onClick={() => handlePrompt(prompt)}
           >
             {prompt}
@@ -87,134 +119,147 @@ export const StarterPrompts: React.FC<StarterPromptsProps> = ({size}) => {
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
 // ── User message ────────────────────────────────────────────────────────────
 interface UserMessageProps {
-  size: Size
+  layout: Layout;
 }
 
-export const UserMessage: React.FC<UserMessageProps> = ({size}) => (
+export const UserMessage: React.FC<UserMessageProps> = ({layout}) => (
   <MessagePrimitive.Root className="tw-flex tw-flex-row-reverse tw-items-end tw-gap-2 tw-animate-fade-up">
-    <div
-      className={
-        size === 'lg'
-          ? 'tw-text-[17px] tw-max-w-[82%] tw-px-4 tw-py-2.5 tw-bg-site-msg-user tw-rounded-[16px] tw-rounded-br-[4px] tw-text-white tw-leading-relaxed'
-          : 'tw-text-[13.5px] tw-max-w-[78%] tw-px-3 tw-py-2 tw-bg-site-msg-user tw-rounded-[14px] tw-rounded-br-[4px] tw-text-white tw-leading-relaxed'
-      }
-    >
+    <div className={styles[layout].userMsg}>
       <MessagePrimitive.Content />
     </div>
   </MessagePrimitive.Root>
-)
+);
 
-// ── Assistant message ───────────────────────────────────────────────────────
 interface AssistantMessageProps {
-  size: Size
+  layout: Layout;
 }
 
-export const AssistantMessage: React.FC<AssistantMessageProps> = ({size}) => {
-  const content = useAuiState((s) => s.message.content)
+export const AssistantMessage: React.FC<AssistantMessageProps> = ({layout}) => {
+  const content = useAuiState((s) => s.message.content);
 
   const isEmpty =
     !content ||
-    content.every((part) => part.type === 'text' && part.text.trim() === '')
+    content.every((part) => part.type === 'text' && part.text.trim() === '');
+
+  const s = styles[layout];
 
   return (
     <MessagePrimitive.Root className="tw-flex tw-flex-row tw-items-end tw-gap-2 tw-animate-fade-up">
-      <div
-        className={
-          size === 'lg'
-            ? 'tw-w-8 tw-h-8 tw-rounded-full tw-bg-site-accent tw-flex tw-items-center tw-justify-center tw-text-white tw-font-bold tw-text-[13px] tw-shrink-0 tw-mb-0.5'
-            : 'tw-w-7 tw-h-7 tw-rounded-full tw-bg-site-accent tw-flex tw-items-center tw-justify-center tw-text-white tw-font-bold tw-text-[11px] tw-shrink-0 tw-mb-0.5'
-        }
-      >
-        B
-      </div>
+      <div className={s.assistantAvatar}>B</div>
       {isEmpty ? (
-        <div
-          className={
-            size === 'lg'
-              ? 'tw-flex tw-items-center tw-gap-1.5 tw-py-3 tw-px-4 tw-bg-site-msg-bot tw-rounded-[16px] tw-rounded-bl-[4px]'
-              : 'tw-flex tw-items-center tw-gap-1 tw-py-2.5 tw-px-3 tw-bg-site-msg-bot tw-rounded-[14px] tw-rounded-bl-[4px]'
-          }
-        >
+        <div className={s.typingBubble}>
           {[0, 200, 400].map((delay) => (
             <span
               key={delay}
-              className={
-                size === 'lg'
-                  ? 'tw-w-2 tw-h-2 tw-rounded-full tw-bg-white/40 tw-animate-bounce'
-                  : 'tw-w-1.5 tw-h-1.5 tw-rounded-full tw-bg-white/35 tw-animate-bounce'
-              }
+              className={s.typingDot}
               style={{animationDelay: `${delay}ms`}}
             />
           ))}
         </div>
       ) : (
-        <div
-          className={
-            size === 'lg'
-              ? 'tw-text-[17px] tw-max-w-[82%] tw-px-4 tw-py-2.5 tw-bg-site-msg-bot tw-rounded-[16px] tw-rounded-bl-[4px] tw-text-white/90 tw-leading-relaxed'
-              : 'tw-text-[13.5px] tw-max-w-[78%] tw-px-3 tw-py-2 tw-bg-site-msg-bot tw-rounded-[14px] tw-rounded-bl-[4px] tw-text-white/90 tw-leading-relaxed'
-          }
-        >
+        <div className={s.botMsg}>
           <MessagePrimitive.Content />
         </div>
       )}
     </MessagePrimitive.Root>
-  )
-}
+  );
+};
 
-// ── Thread body (viewport + composer) ──────────────────────────────────────
+const ComposerCharCount: React.FC<{layout: Layout}> = ({layout}) => {
+  const text = useAuiState((s) => s.composer.text);
+  const used = text.length;
+  const remaining = MAX_CHAT_INPUT_LENGTH - used;
+
+  const isWarning = remaining <= 50;
+  const isCritical = remaining <= 10;
+
+  return (
+    <div
+      className={`tw-text-right tw-mt-1.5 tw-pr-1 tw-tabular-nums tw-transition-colors tw-duration-150 ${
+        isCritical
+          ? 'tw-text-red-400'
+          : isWarning
+            ? 'tw-text-amber-400'
+            : 'tw-text-white/30'
+      } ${styles[layout].charCount}`}
+    >
+      {used} / {MAX_CHAT_INPUT_LENGTH}
+    </div>
+  );
+};
+
 interface ChatThreadProps {
-  size: Size
-  composerStyle?: React.CSSProperties
+  layout: Layout;
+  composerStyle?: React.CSSProperties;
 }
 
 export const ChatThread: React.FC<ChatThreadProps> = ({
-  size,
+  layout,
   composerStyle,
 }) => {
+  const [shaking, setShaking] = React.useState(false);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (
+      e.currentTarget.value.length >= MAX_CHAT_INPUT_LENGTH &&
+      e.key.length === 1 &&
+      !e.ctrlKey &&
+      !e.metaKey
+    ) {
+      setShaking(true);
+    }
+  };
+
   // Stable component wrappers so ThreadPrimitive.Messages doesn't remount on every render
   const components = React.useMemo(
     () => ({
-      UserMessage: () => <UserMessage size={size} />,
-      AssistantMessage: () => <AssistantMessage size={size} />,
+      UserMessage: () => <UserMessage layout={layout} />,
+      AssistantMessage: () => <AssistantMessage layout={layout} />,
     }),
-    [size],
-  )
+    [layout],
+  );
 
   return (
     <ThreadPrimitive.Root className="tw-flex-1 tw-flex tw-flex-col tw-overflow-hidden tw-bg-site-panel">
       <ThreadPrimitive.Viewport
-        className={`tw-flex-1 tw-overflow-y-auto tw-overscroll-contain tw-flex tw-flex-col tw-scroll-smooth tw-bg-site-panel [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.12)_transparent] ${size === 'lg' ? 'tw-px-4 tw-py-4 tw-gap-4' : 'tw-px-3 tw-py-4 tw-gap-3'}`}
+        className={`tw-flex-1 tw-overflow-y-auto tw-overscroll-contain tw-flex tw-flex-col tw-scroll-smooth tw-bg-site-panel [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.12)_transparent] ${styles[layout].viewport}`}
       >
         <ThreadPrimitive.Empty>
-          <StarterPrompts size={size} />
+          <StarterPrompts layout={layout} />
         </ThreadPrimitive.Empty>
+        {/* Spacer: mobile only. Pushes messages to the bottom (iMessage-style)
+            when the chat is sparse. Collapses once messages fill the viewport. */}
+        {layout === 'mobile' && <div className="tw-flex-1" />}
         <ThreadPrimitive.Messages components={components} />
       </ThreadPrimitive.Viewport>
 
       <div
-        className="tw-border-t tw-border-white/[0.08] tw-p-3 tw-shrink-0 tw-bg-site-dark"
-        style={composerStyle}
+        className="tw-border-t tw-border-white/[0.08] tw-p-3 tw-shrink-0"
+        style={{backgroundColor: 'var(--color-site-dark)', ...composerStyle}}
       >
         <ComposerPrimitive.Root
-          className={`tw-flex tw-items-center tw-gap-2 tw-bg-site-input tw-border tw-border-white/[0.08] tw-rounded-3xl focus-within:tw-border-site-accent/50 tw-transition-colors tw-duration-150 ${size === 'lg' ? 'tw-pl-5 tw-pr-2 tw-py-2' : 'tw-pl-4 tw-pr-1.5 tw-py-1.5'}`}
+          className={`tw-flex tw-items-center tw-gap-2 tw-bg-site-input tw-border tw-border-white/[0.08] tw-rounded-3xl focus-within:tw-border-site-accent/50 tw-transition-colors tw-duration-150 ${shaking ? 'tw-animate-shake' : ''} ${styles[layout].composerPill}`}
+          onAnimationEnd={() => setShaking(false)}
         >
           <ComposerPrimitive.Input
-            className={`tw-flex-1 tw-bg-transparent tw-border-none tw-outline-none tw-text-white/90 tw-leading-snug tw-resize-none tw-overflow-y-auto tw-py-0.5 placeholder:tw-text-white/35 ${size === 'lg' ? 'tw-text-[17px] tw-max-h-32' : 'tw-text-[15px] tw-max-h-24'}`}
+            className={`tw-flex-1 tw-bg-transparent tw-border-none tw-outline-none tw-text-white/90 tw-leading-snug tw-resize-none tw-overflow-y-auto tw-py-0.5 placeholder:tw-text-white/35 ${styles[layout].composerInput}`}
             placeholder="Ask me anything..."
+            maxLength={MAX_CHAT_INPUT_LENGTH}
+            onKeyDown={handleKeyDown}
           />
           <ComposerPrimitive.Send
-            className={`tw-rounded-full tw-bg-site-accent tw-text-white tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-shrink-0 tw-transition-all tw-duration-150 hover:tw-bg-site-accent-hover active:tw-scale-90 disabled:tw-bg-white/[0.08] disabled:tw-cursor-not-allowed disabled:tw-text-white/35 tw-outline-none ${size === 'lg' ? 'tw-w-10 tw-h-10' : 'tw-w-8 tw-h-8'}`}
+            className={`tw-rounded-full tw-bg-site-accent tw-text-white tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-shrink-0 tw-transition-all tw-duration-150 hover:tw-bg-site-accent-hover active:tw-scale-90 disabled:tw-bg-white/[0.08] disabled:tw-cursor-not-allowed disabled:tw-text-white/35 tw-outline-none ${styles[layout].sendButton}`}
           >
-            <Send size={size === 'lg' ? 16 : 14} strokeWidth={2.5} />
+            <Send size={styles[layout].sendIconSize} strokeWidth={2.5} />
           </ComposerPrimitive.Send>
         </ComposerPrimitive.Root>
+        <ComposerCharCount layout={layout} />
       </div>
     </ThreadPrimitive.Root>
-  )
-}
+  );
+};

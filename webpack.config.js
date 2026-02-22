@@ -1,6 +1,6 @@
 /** @type {import('webpack').Configuration} */
-const isDev = process.env.NODE_ENV === 'development'
-const path = require('path')
+const isDev = process.env.NODE_ENV === 'development';
+const path = require('path');
 
 module.exports = {
   mode: isDev ? 'development' : 'production',
@@ -64,4 +64,4 @@ module.exports = {
       },
     ],
   },
-}
+};

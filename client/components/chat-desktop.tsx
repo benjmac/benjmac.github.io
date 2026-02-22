@@ -1,23 +1,17 @@
-/**
- * chat-desktop.tsx
- *
- * Floating 360×520 panel for pointer/mouse devices.
- * Uses AssistantModalPrimitive for the open/close toggle + animation.
- */
+import React from 'react';
+import {AssistantModalPrimitive} from '@assistant-ui/react';
+import {MessageCircle, X} from 'lucide-react';
 
-import React from 'react'
-import {AssistantModalPrimitive} from '@assistant-ui/react'
-import {MessageCircle, X} from 'lucide-react'
-
-import {ChatThread} from './chat-shared'
-import type {useSparkleEffect} from './sparkle-button'
+import {ChatThread, OnlineIndicator} from './chat-shared';
+import type {useSparkleEffect} from './sparkle-button';
 
 interface DesktopChatProps {
-  sparkle: ReturnType<typeof useSparkleEffect>
+  sparkle: ReturnType<typeof useSparkleEffect>;
 }
 
 export const DesktopChat: React.FC<DesktopChatProps> = ({sparkle}) => {
-  const {buttonRef, animClass, cssVars, sparkleOverlay} = sparkle
+  const {buttonRef, animClass, cssVars, sparkleOverlay, onMouseEnter, onClick} =
+    sparkle;
 
   return (
     <AssistantModalPrimitive.Root>
@@ -27,6 +21,8 @@ export const DesktopChat: React.FC<DesktopChatProps> = ({sparkle}) => {
             ref={buttonRef}
             className={`tw-group tw-relative tw-w-[52px] tw-h-[52px] tw-rounded-full tw-bg-site-dark tw-border tw-border-white/10 tw-text-white/90 tw-cursor-pointer tw-flex tw-items-center tw-justify-center active:tw-scale-95 tw-outline-none ${animClass}`}
             style={cssVars}
+            onMouseEnter={onMouseEnter}
+            onClick={onClick}
             aria-label="Open assistant"
           >
             <span className="tw-absolute tw-flex tw-transition-all tw-duration-200 tw-group-data-[state=open]:tw-opacity-0 tw-group-data-[state=open]:tw-scale-50">
@@ -46,7 +42,6 @@ export const DesktopChat: React.FC<DesktopChatProps> = ({sparkle}) => {
         align="end"
         sideOffset={12}
       >
-        {/* Header */}
         <div className="tw-bg-site-dark tw-border-b tw-border-white/[0.08] tw-px-4 tw-py-3 tw-shrink-0 tw-shadow-[0_1px_8px_rgba(0,0,0,0.3)]">
           <div className="tw-flex tw-items-center tw-gap-2.5">
             <div className="tw-w-9 tw-h-9 tw-rounded-full tw-bg-site-accent tw-flex tw-items-center tw-justify-center tw-text-white tw-font-bold tw-text-sm tw-shrink-0">
@@ -56,10 +51,7 @@ export const DesktopChat: React.FC<DesktopChatProps> = ({sparkle}) => {
               <div className="tw-text-sm tw-font-semibold tw-text-white/90 tw-leading-tight">
                 Ben&apos;s Assistant
               </div>
-              <div className="tw-flex tw-items-center tw-gap-1 tw-mt-0.5">
-                <span className="tw-w-1.5 tw-h-1.5 tw-rounded-full tw-bg-site-online tw-shadow-[0_0_6px_rgba(76,175,130,0.6)] tw-animate-pulse" />
-                <span className="tw-text-[11px] tw-text-white/50">Online</span>
-              </div>
+              <OnlineIndicator textOpacity="tw-text-white/50" />
             </div>
             <AssistantModalPrimitive.Trigger asChild>
               <button
@@ -72,8 +64,8 @@ export const DesktopChat: React.FC<DesktopChatProps> = ({sparkle}) => {
           </div>
         </div>
 
-        <ChatThread size="sm" />
+        <ChatThread layout="desktop" />
       </AssistantModalPrimitive.Content>
     </AssistantModalPrimitive.Root>
-  )
-}
+  );
+};

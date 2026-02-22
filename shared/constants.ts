@@ -1,4 +1,4 @@
-import {TechnologiesAndSkills, WorkExperienceItem, Content} from '../types'
+import {TechnologiesAndSkills, WorkExperienceItem, Content} from '../types';
 
 const technoligiesAndSkills: TechnologiesAndSkills = {
   proficient: [
@@ -212,7 +212,7 @@ const technoligiesAndSkills: TechnologiesAndSkills = {
       link: 'https://docs.microsoft.com/en-us/dotnet/csharp/',
     },
   ],
-}
+};
 
 const workExperience: WorkExperienceItem[] = [
   {
@@ -370,9 +370,9 @@ const workExperience: WorkExperienceItem[] = [
       'Guided constituents through capitol grounds while explaining governmental processes',
     ],
   },
-]
+];
 
 export const content: Content = {
   technoligiesAndSkills,
   workExperience,
-}
+};

@@ -1,8 +1,8 @@
-import React from 'react'
+import React from 'react';
 
-import {Header, Image} from 'semantic-ui-react'
+import {Header, Image} from 'semantic-ui-react';
 
-import '../styles/about.scss'
+import '../styles/about.scss';
 
 /**
  * ABOUT COMPONENT
@@ -65,7 +65,7 @@ export const AboutMe = () => {
         creates a more efficient, innovative, and resilient future.
       </p>
     </div>
-  )
-}
+  );
+};
 
-export default AboutMe
+export default AboutMe;

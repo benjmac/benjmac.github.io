@@ -1,4 +1,6 @@
-import {ClientConstants} from '../../types'
+import {ClientConstants} from '../../types';
+
+export const MAX_CHAT_INPUT_LENGTH = 500;
 
 const constants: ClientConstants = {
   routes: {
@@ -14,6 +16,6 @@ const constants: ClientConstants = {
     workExperience: 'work-experience',
   },
   shiftMaxWidth: 660,
-}
+};
 
-export default constants
+export default constants;

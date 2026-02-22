@@ -1,11 +1,11 @@
-import React from 'react'
+import React from 'react';
 
-import {MenuStackable, ChatWidget} from './components'
-import {ContentContextProvider} from './state/content'
-import {ChatRuntimeProvider} from './state/chat-runtime'
-import Routes from './routes'
+import {MenuStackable, ChatWidget} from './components';
+import {ContentContextProvider} from './state/content';
+import {ChatRuntimeProvider} from './state/chat-runtime';
+import Routes from './routes';
 
-import './styles/app.scss'
+import './styles/app.scss';
 
 const App = () => {
   return (
@@ -23,7 +23,7 @@ const App = () => {
         </ContentContextProvider>
       </div>
     </ChatRuntimeProvider>
-  )
-}
+  );
+};
 
-export default App
+export default App;
