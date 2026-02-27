@@ -29,6 +29,7 @@ module.exports = {
         'site-input': 'var(--color-site-input)',
         'site-accent': 'var(--color-site-accent)',
         'site-accent-hover': 'var(--color-site-accent-hover)',
+        'site-accent-selection': 'var(--color-site-accent-selection)',
         'site-online': 'var(--color-site-online)',
       },
       // Custom animations for panel open/close and message appearance
@@ -48,6 +49,8 @@ module.exports = {
         'bubble-alive':
           'blob-morph var(--blob-period, 5s) ease-in-out infinite, glow-pulse var(--glow-period, 2.5s) ease-in-out infinite',
         shake: 'shake 0.4s ease',
+        // Magenta glow that flashes briefly on the bot bubble when a new message lands
+        'msg-arrive': 'msg-arrive 4s linear forwards',
         // Subtle pulsing blue ring on the button while idle — signals AI-powered without distracting motion
         'sparkle-idle-glow': 'sparkle-idle-glow 4s ease-in-out infinite',
       },
@@ -104,6 +107,18 @@ module.exports = {
           '60%': {transform: 'translateX(4px)'},
           '75%': {transform: 'translateX(-2px)'},
           '90%': {transform: 'translateX(2px)'},
+        },
+        // Magenta arrival flash on bot message bubble
+        'msg-arrive': {
+          '0%': {
+            boxShadow: '0 0 0 0 rgba(232, 121, 249, 0)',
+            animationTimingFunction: 'cubic-bezier(0.4, 0, 0.6, 1)',
+          },
+          '28%': {
+            boxShadow: '0 0 11px 3.3px rgba(232, 121, 249, 0.55)',
+            animationTimingFunction: 'cubic-bezier(0.4, 0, 0.8, 1)',
+          },
+          '100%': {boxShadow: '0 0 0 0 rgba(232, 121, 249, 0)'},
         },
         // Idle button: box-shadow pulse on overlay div — clearly visible but calm
         'sparkle-idle-glow': {

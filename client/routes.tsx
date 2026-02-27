@@ -1,8 +1,34 @@
-import React from 'react';
-import {withRouter, Redirect, Route, Switch} from 'react-router-dom';
+import React, {useEffect} from 'react';
+import {
+  withRouter,
+  Redirect,
+  Route,
+  Switch,
+  useLocation,
+} from 'react-router-dom';
 import {AboutMe, Resume, TechnicalSkills, WorkExperience} from './components';
 
 import constants from './constants/client-constants';
+
+/**
+ * Scrolls to the top of the page on every route change.
+ * Targets both the window and the .app-container scroll host.
+ */
+const ScrollToTop = () => {
+  const {pathname} = useLocation();
+  useEffect(() => {
+    // Scroll the inner scroll container if it exists
+    const container = document.querySelector(
+      '.app-container',
+    ) as HTMLElement | null;
+    if (container) {
+      container.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+    }
+    // Also scroll the window for safety
+    window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+  }, [pathname]);
+  return null;
+};
 
 /**
  * COMPONENT
@@ -12,7 +38,8 @@ const Routes = () => {
   const routes = constants.routes;
 
   return (
-    <div className="routes-container" style={{height: '100%', width: '100%'}}>
+    <div className="routes-container">
+      <ScrollToTop />
       <Switch>
         <Route path={routes.aboutMe} component={AboutMe} />
         <Route path={routes.resume} component={Resume} />

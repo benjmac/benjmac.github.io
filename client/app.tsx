@@ -13,10 +13,7 @@ const App = () => {
       <div className="app-container">
         <ContentContextProvider>
           <MenuStackable />
-          <div
-            className="content-body"
-            style={{height: 'inherit', width: 'inherit'}}
-          >
+          <div className="content-body">
             <Routes />
           </div>
           <ChatWidget />

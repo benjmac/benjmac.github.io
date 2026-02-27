@@ -7,21 +7,29 @@ import type {useSparkleEffect} from './sparkle-button';
 
 interface MobileChatProps {
   sparkle: ReturnType<typeof useSparkleEffect>;
+  onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const MobileChat: React.FC<MobileChatProps> = ({sparkle}) => {
-  const {buttonRef, animClass, cssVars, sparkleOverlay, onMouseEnter, onClick} =
-    sparkle;
+export const MobileChat: React.FC<MobileChatProps> = ({
+  sparkle,
+  onOpenChange,
+}) => {
   const [open, setOpen] = useState(false);
   const [closing, setClosing] = useState(false);
+  const {buttonRef, animClass, cssVars, sparkleOverlay, onMouseEnter, onClick} =
+    sparkle;
   const panelRef = useRef<HTMLDivElement>(null);
 
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => {
+    setOpen(true);
+    onOpenChange(true);
+  };
   const handleClose = () => {
     setClosing(true);
     setTimeout(() => {
       setOpen(false);
       setClosing(false);
+      onOpenChange(false);
     }, 280);
   };
 
@@ -106,35 +114,17 @@ export const MobileChat: React.FC<MobileChatProps> = ({sparkle}) => {
         ReactDOM.createPortal(
           <>
             {/* position:absolute anchors to the layout viewport — won't shift when the mobile keyboard opens. height:10000px ensures coverage at any scroll depth. */}
-            <div
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '10000px',
-                backgroundColor: 'var(--color-site-dark)',
-                zIndex: 9998,
-              }}
-            />
+            <div className="tw-absolute tw-top-0 tw-left-0 tw-w-full tw-h-[10000px] tw-bg-site-dark tw-z-[9998]" />
 
             <div
               ref={panelRef}
-              className={`tw-fixed tw-inset-0 tw-z-[9999] tw-flex tw-flex-col ${
+              className={`tw-fixed tw-inset-0 tw-z-[9999] tw-flex tw-flex-col tw-overflow-hidden tw-bg-site-panel tw-pt-[env(safe-area-inset-top)] ${
                 closing
                   ? 'tw-animate-mobile-slide-out'
                   : 'tw-animate-mobile-slide-in'
               }`}
-              style={{
-                backgroundColor: 'var(--color-site-panel)',
-                overflow: 'hidden',
-                paddingTop: 'env(safe-area-inset-top)',
-              }}
             >
-              <div
-                className="tw-border-b tw-border-white/[0.08] tw-px-3 tw-py-3 tw-shrink-0 tw-shadow-[0_1px_8px_rgba(0,0,0,0.3)]"
-                style={{backgroundColor: 'var(--color-site-dark)'}}
-              >
+              <div className="tw-border-b tw-border-white/[0.08] tw-px-3 tw-py-3 tw-shrink-0 tw-shadow-[0_1px_8px_rgba(0,0,0,0.3)] tw-bg-site-dark">
                 <div className="tw-flex tw-items-center">
                   <button
                     onClick={handleClose}
@@ -147,7 +137,7 @@ export const MobileChat: React.FC<MobileChatProps> = ({sparkle}) => {
 
                   <div className="tw-flex-1 tw-flex tw-flex-col tw-items-center">
                     <span className="tw-text-[15px] tw-font-semibold tw-text-white/90 tw-leading-tight">
-                      Ben&apos;s Assistant
+                      Mokka
                     </span>
                     <OnlineIndicator textOpacity="tw-text-white/40" />
                   </div>

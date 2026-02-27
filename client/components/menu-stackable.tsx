@@ -63,29 +63,14 @@ export const MenuStackable: React.FC = () => {
     setShowNavMenu(!showNavMenu);
   };
 
-  const scrollToTop = () => {
-    if (window.scrollTo) {
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: 'smooth',
-      });
-    } else {
-      window.scrollY = 0;
-      window.scrollX = 0;
-    }
-  };
-
   const invertedMenuItemSelected = (item: string) => {
     setActiveItem(item);
-    scrollToTop();
   };
 
   // Sets active item in tool bar and then hides show menu
   const sideBarItemSelected = (item: string) => {
     setActiveItem(item);
     setShowNavMenu(false);
-    scrollToTop();
   };
 
   return (
@@ -139,11 +124,7 @@ export const MenuStackable: React.FC = () => {
             >
               Resume
             </Menu.Item>
-            <Menu.Item
-              className="custom-icon"
-              position="right"
-              style={{padding: 0}}
-            >
+            <Menu.Item className="custom-icon" position="right">
               <a
                 target="_blank"
                 rel="noreferrer"
@@ -152,7 +133,7 @@ export const MenuStackable: React.FC = () => {
                 <img src="linkedin.png" />
               </a>
               <a
-                style={{marginLeft: '10px', marginRight: '10px'}}
+                className="custom-icon-github"
                 target="_blank"
                 rel="noreferrer"
                 href="https://github.com/benjmac"
@@ -210,11 +191,7 @@ export const MenuStackable: React.FC = () => {
                 <div />
               )}
             </Dropdown>
-            <Menu.Item
-              className="custom-icon"
-              position="right"
-              style={{padding: 0}}
-            >
+            <Menu.Item className="custom-icon" position="right">
               <a
                 target="_blank"
                 rel="noreferrer"
@@ -223,7 +200,7 @@ export const MenuStackable: React.FC = () => {
                 <img src="linkedin.png" />
               </a>
               <a
-                style={{marginLeft: '10px', marginRight: '10px'}}
+                className="custom-icon-github"
                 target="_blank"
                 rel="noreferrer"
                 href="https://github.com/benjmac"

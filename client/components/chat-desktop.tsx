@@ -7,14 +7,18 @@ import type {useSparkleEffect} from './sparkle-button';
 
 interface DesktopChatProps {
   sparkle: ReturnType<typeof useSparkleEffect>;
+  onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const DesktopChat: React.FC<DesktopChatProps> = ({sparkle}) => {
+export const DesktopChat: React.FC<DesktopChatProps> = ({
+  sparkle,
+  onOpenChange,
+}) => {
   const {buttonRef, animClass, cssVars, sparkleOverlay, onMouseEnter, onClick} =
     sparkle;
 
   return (
-    <AssistantModalPrimitive.Root>
+    <AssistantModalPrimitive.Root onOpenChange={onOpenChange}>
       <AssistantModalPrimitive.Anchor className="tw-fixed tw-bottom-7 tw-right-7 tw-z-[999]">
         <AssistantModalPrimitive.Trigger asChild>
           <button
@@ -44,18 +48,22 @@ export const DesktopChat: React.FC<DesktopChatProps> = ({sparkle}) => {
       >
         <div className="tw-bg-site-dark tw-border-b tw-border-white/[0.08] tw-px-4 tw-py-3 tw-shrink-0 tw-shadow-[0_1px_8px_rgba(0,0,0,0.3)]">
           <div className="tw-flex tw-items-center tw-gap-2.5">
-            <div className="tw-w-9 tw-h-9 tw-rounded-full tw-bg-site-accent tw-flex tw-items-center tw-justify-center tw-text-white tw-font-bold tw-text-sm tw-shrink-0">
-              B
+            <div className="tw-w-9 tw-h-9 tw-rounded-full tw-overflow-hidden tw-shrink-0">
+              <img
+                src="images/mokka.png"
+                alt="Mokka"
+                className="tw-w-full tw-h-full tw-object-cover"
+              />
             </div>
             <div className="tw-flex-1">
               <div className="tw-text-sm tw-font-semibold tw-text-white/90 tw-leading-tight">
-                Ben&apos;s Assistant
+                Mokka
               </div>
               <OnlineIndicator textOpacity="tw-text-white/50" />
             </div>
             <AssistantModalPrimitive.Trigger asChild>
               <button
-                className="tw-flex tw-items-center tw-justify-center tw-w-7 tw-h-7 tw-rounded-full tw-text-white/40 hover:tw-text-white/80 hover:tw-bg-white/[0.08] tw-transition-all tw-duration-150 tw-outline-none tw-border-none tw-bg-transparent tw-cursor-pointer"
+                className="tw-flex tw-items-center tw-justify-center tw-w-7 tw-h-7 tw-rounded-full tw-text-white/60 hover:tw-text-white/90 hover:tw-bg-white/[0.08] tw-transition-all tw-duration-150 tw-outline-none tw-border-none tw-bg-transparent tw-cursor-pointer"
                 aria-label="Close assistant"
               >
                 <X size={16} />

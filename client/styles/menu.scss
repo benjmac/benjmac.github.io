@@ -50,6 +50,8 @@ div.ui.menu .ui.dropdown .menu > .active.item {
 }
 
 .custom-icon {
+  padding: 0 !important;
+
   a {
     height: 32px;
 
@@ -59,5 +61,10 @@ div.ui.menu .ui.dropdown .menu > .active.item {
       height: 32px;
       width: 32px;
     }
+  }
+
+  .custom-icon-github {
+    margin-left: 10px;
+    margin-right: 10px;
   }
 }

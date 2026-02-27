@@ -1,3 +1,46 @@
+// ---------------------------------------------------------------------------
+// Chat Proxy API
+// ---------------------------------------------------------------------------
+
+/** Shape of a single message sent to the proxy worker. */
+export interface ChatProxyMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+/** A text block returned in the worker response. */
+export interface ChatProxyTextBlock {
+  type: 'text';
+  text: string;
+}
+
+/**
+ * Represents any non-text content block (tool use, etc.).
+ * Typed as a discriminated union so exhaustive checks remain possible later.
+ */
+export interface ChatProxyOtherBlock {
+  type: Exclude<string, 'text'>;
+  [key: string]: unknown;
+}
+
+export type ChatProxyContentBlock = ChatProxyTextBlock | ChatProxyOtherBlock;
+
+/** Successful response from the worker's POST /  endpoint. */
+export interface ChatProxySuccessResponse {
+  role: 'assistant';
+  content: ChatProxyContentBlock[];
+  stop_reason: string;
+}
+
+/** Error response body returned with 4xx / 5xx status codes. */
+export interface ChatProxyErrorResponse {
+  error: string;
+}
+
+// ---------------------------------------------------------------------------
+// Skill / Technologies
+// ---------------------------------------------------------------------------
+
 // Skill / Technologies
 export interface Skill {
   skillName: string;

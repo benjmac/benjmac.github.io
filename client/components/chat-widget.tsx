@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import '../styles/tailwind.css';
 import {useSparkleEffect} from './sparkle-button';
@@ -12,11 +12,12 @@ const SPARKLE_DURATION_MS = 10_000;
 const isMobile = /Mobi|Android|iPhone|iPod/i.test(navigator.userAgent);
 
 export const ChatWidget: React.FC = () => {
-  const sparkle = useSparkleEffect(SPARKLE_DURATION_MS);
+  const [isOpen, setIsOpen] = useState(false);
+  const sparkle = useSparkleEffect(SPARKLE_DURATION_MS, isOpen);
   return isMobile ? (
-    <MobileChat sparkle={sparkle} />
+    <MobileChat sparkle={sparkle} onOpenChange={setIsOpen} />
   ) : (
-    <DesktopChat sparkle={sparkle} />
+    <DesktopChat sparkle={sparkle} onOpenChange={setIsOpen} />
   );
 };
 

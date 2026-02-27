@@ -67,20 +67,14 @@ const SparkleRing: React.FC<SparkleRingProps> = ({
     {PARTICLE_ANGLES.map((angle, i) => (
       <div
         key={i}
-        className="tw-absolute tw-top-1/2 tw-left-1/2 tw-pointer-events-none"
-        style={{width: 0, height: 0, transform: `rotate(${angle}deg)`}}
+        className="tw-absolute tw-top-1/2 tw-left-1/2 tw-pointer-events-none tw-w-0 tw-h-0"
+        style={{transform: `rotate(${angle}deg)`}}
       >
         <span
-          className="tw-block tw-animate-sparkle-fly tw-text-site-accent"
+          className="tw-block tw-animate-sparkle-fly tw-text-site-accent tw-absolute tw--left-1 tw-fill-mode-both tw-text-shadow-sparkle"
           style={{
             animationDelay: `${i * staggerS}s`,
-            // fill-mode: both keeps opacity:0 during the delay — no center flash on load
-            animationFillMode: 'both',
             fontSize: i % 2 === 0 ? '11px' : '7px',
-            textShadow:
-              '0 0 8px rgba(74,127,255,1), 0 0 18px rgba(74,127,255,0.6)',
-            position: 'absolute',
-            left: '-4px',
           }}
         >
           {PARTICLE_CHARS[i]}
@@ -102,11 +96,8 @@ const IdleGlowOverlay: React.FC = () => {
   }, []);
   return (
     <div
-      className="tw-absolute tw-inset-0 tw-rounded-full tw-pointer-events-none tw-animate-sparkle-idle-glow"
-      style={{
-        opacity: visible ? 1 : 0,
-        transition: 'opacity 800ms ease-in',
-      }}
+      className="tw-absolute tw-inset-0 tw-rounded-full tw-pointer-events-none tw-animate-sparkle-idle-glow tw-transition-opacity tw-duration-[800ms] tw-ease-in"
+      style={{opacity: visible ? 1 : 0}}
       aria-hidden="true"
     />
   );
@@ -131,7 +122,10 @@ export interface SparkleEffectResult {
   onClick: () => void;
 }
 
-export function useSparkleEffect(durationMs: number): SparkleEffectResult {
+export function useSparkleEffect(
+  durationMs: number,
+  isOpen = false,
+): SparkleEffectResult {
   const [phase, setPhase] = useState<SparklePhase>('active');
   const [hoverPhase, setHoverPhase] = useState<'idle' | 'active' | 'fading'>(
     'idle',
@@ -186,7 +180,7 @@ export function useSparkleEffect(durationMs: number): SparkleEffectResult {
 
   // ── Hover handler — re-triggers a short sparkle burst ──
   const onMouseEnter = useCallback(() => {
-    if (phase !== 'gone' || hoverPhase !== 'idle') return;
+    if (isOpen || phase !== 'gone' || hoverPhase !== 'idle') return;
     setHoverPhase('active');
     hoverTimer1.current = setTimeout(() => {
       setHoverPhase('fading');
@@ -194,7 +188,7 @@ export function useSparkleEffect(durationMs: number): SparkleEffectResult {
     hoverTimer2.current = setTimeout(() => {
       setHoverPhase('idle');
     }, HOVER_DURATION_MS + HOVER_FADEOUT_MS);
-  }, [phase, hoverPhase]);
+  }, [phase, hoverPhase, isOpen]);
 
   // ── Click handler — permanently stops the idle pulse ──
   const onClick = useCallback(() => {
@@ -249,8 +243,8 @@ export function useSparkleEffect(durationMs: number): SparkleEffectResult {
       />
     );
   } else {
-    // Idle — show pulsing glow unless the user has already clicked the button
-    sparkleOverlay = hasBeenClicked ? null : <IdleGlowOverlay />;
+    // Idle — show pulsing glow unless the user has already clicked the button or chat is open
+    sparkleOverlay = hasBeenClicked || isOpen ? null : <IdleGlowOverlay />;
   }
 
   return {buttonRef, animClass, cssVars, sparkleOverlay, onMouseEnter, onClick};

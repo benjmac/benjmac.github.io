@@ -6,25 +6,22 @@ import {
   useAui,
   useAuiState,
 } from '@assistant-ui/react';
-import {Send} from 'lucide-react';
+import {Send, Square} from 'lucide-react';
 import {MAX_CHAT_INPUT_LENGTH} from '../constants/client-constants';
 
 export const OnlineIndicator: React.FC<{textOpacity?: string}> = ({
   textOpacity = 'tw-text-white/50',
 }) => (
   <div className="tw-flex tw-items-center tw-gap-1 tw-mt-0.5">
-    <span
-      className="tw-w-1.5 tw-h-1.5 tw-rounded-full tw-bg-site-online tw-animate-pulse"
-      style={{boxShadow: '0 0 6px var(--color-site-online-glow)'}}
-    />
+    <span className="tw-w-1.5 tw-h-1.5 tw-rounded-full tw-bg-site-online tw-animate-pulse tw-shadow-online-glow" />
     <span className={`tw-text-[11px] ${textOpacity}`}>Online</span>
   </div>
 );
 
 export const STARTER_PROMPTS = [
-  'Tell me about your experience',
-  'What tech do you work with?',
-  'Are you available for hire?',
+  'Tell me about his experience',
+  'What tech does he work with?',
+  'How did he get into engineering?',
 ];
 
 type Layout = 'mobile' | 'desktop';
@@ -40,7 +37,7 @@ const styles = {
     userMsg:
       'tw-text-[17px] tw-max-w-[82%] tw-px-4 tw-py-2.5 tw-bg-site-msg-user tw-rounded-[16px] tw-rounded-br-[4px] tw-text-white tw-leading-relaxed tw-break-words',
     assistantAvatar:
-      'tw-w-8 tw-h-8 tw-rounded-full tw-bg-site-accent tw-flex tw-items-center tw-justify-center tw-text-white tw-font-bold tw-text-[13px] tw-shrink-0 tw-mb-0.5',
+      'tw-w-8 tw-h-8 tw-rounded-full tw-overflow-hidden tw-shrink-0 tw-mb-0.5',
     typingBubble:
       'tw-flex tw-items-center tw-gap-1.5 tw-py-3 tw-px-4 tw-bg-site-msg-bot tw-rounded-[16px] tw-rounded-bl-[4px]',
     typingDot: 'tw-w-2 tw-h-2 tw-rounded-full tw-bg-white/40 tw-animate-bounce',
@@ -63,7 +60,7 @@ const styles = {
     userMsg:
       'tw-text-[13.5px] tw-max-w-[78%] tw-px-3 tw-py-2 tw-bg-site-msg-user tw-rounded-[14px] tw-rounded-br-[4px] tw-text-white tw-leading-relaxed tw-break-words',
     assistantAvatar:
-      'tw-w-7 tw-h-7 tw-rounded-full tw-bg-site-accent tw-flex tw-items-center tw-justify-center tw-text-white tw-font-bold tw-text-[11px] tw-shrink-0 tw-mb-0.5',
+      'tw-w-7 tw-h-7 tw-rounded-full tw-overflow-hidden tw-shrink-0 tw-mb-0.5',
     typingBubble:
       'tw-flex tw-items-center tw-gap-1 tw-py-2.5 tw-px-3 tw-bg-site-msg-bot tw-rounded-[14px] tw-rounded-bl-[4px]',
     typingDot:
@@ -80,7 +77,7 @@ const styles = {
 } as const satisfies Record<Layout, Record<string, string | number>>;
 
 const AVATAR_CLASS =
-  'tw-w-14 tw-h-14 tw-rounded-full tw-bg-site-accent tw-flex tw-items-center tw-justify-center tw-text-white tw-font-bold tw-text-xl tw-shadow-[0_4px_16px_rgba(74,127,255,0.35)]';
+  'tw-w-14 tw-h-14 tw-rounded-full tw-overflow-hidden tw-shrink-0 tw-shadow-[0_4px_16px_rgba(74,127,255,0.35)]';
 
 interface StarterPromptsProps {
   layout: Layout;
@@ -100,11 +97,17 @@ export const StarterPrompts: React.FC<StarterPromptsProps> = ({layout}) => {
 
   return (
     <div className={s.starterContainer}>
-      <div className={AVATAR_CLASS}>B</div>
+      <div className={AVATAR_CLASS}>
+        <img
+          src="images/mokka.png"
+          alt="Mokka"
+          className="tw-w-full tw-h-full tw-object-cover"
+        />
+      </div>
 
       <p className={s.starterText}>
-        Hey there! I&apos;m Ben&apos;s assistant. Ask me anything about his
-        work, skills, or availability.
+        Hey there! I&apos;m Mokka, Ben&apos;s assistant. Ask me anything about
+        his work and skills.
       </p>
 
       <div className="tw-flex tw-flex-col tw-gap-2.5 tw-w-full">
@@ -141,16 +144,34 @@ interface AssistantMessageProps {
 
 export const AssistantMessage: React.FC<AssistantMessageProps> = ({layout}) => {
   const content = useAuiState((s) => s.message.content);
+  const [isNew, setIsNew] = React.useState(false);
 
   const isEmpty =
     !content ||
     content.every((part) => part.type === 'text' && part.text.trim() === '');
 
+  // Initialise to the *current* isEmpty so remounted messages that already have
+  // content (e.g. after closing/reopening the panel) never trigger the glow.
+  const wasEmptyRef = React.useRef(isEmpty);
+
+  React.useEffect(() => {
+    if (wasEmptyRef.current && !isEmpty) {
+      setIsNew(true);
+    }
+    wasEmptyRef.current = isEmpty;
+  }, [isEmpty]);
+
   const s = styles[layout];
 
   return (
     <MessagePrimitive.Root className="tw-flex tw-flex-row tw-items-end tw-gap-2 tw-animate-fade-up">
-      <div className={s.assistantAvatar}>B</div>
+      <div className={s.assistantAvatar}>
+        <img
+          src="images/mokka.png"
+          alt="Mokka"
+          className="tw-w-full tw-h-full tw-object-cover"
+        />
+      </div>
       {isEmpty ? (
         <div className={s.typingBubble}>
           {[0, 200, 400].map((delay) => (
@@ -162,7 +183,10 @@ export const AssistantMessage: React.FC<AssistantMessageProps> = ({layout}) => {
           ))}
         </div>
       ) : (
-        <div className={s.botMsg}>
+        <div
+          className={`${s.botMsg}${isNew ? ' tw-animate-msg-arrive' : ''}`}
+          onAnimationEnd={() => setIsNew(false)}
+        >
           <MessagePrimitive.Content />
         </div>
       )}
@@ -185,7 +209,7 @@ const ComposerCharCount: React.FC<{layout: Layout}> = ({layout}) => {
           ? 'tw-text-red-400'
           : isWarning
             ? 'tw-text-amber-400'
-            : 'tw-text-white/30'
+            : 'tw-text-white/50'
       } ${styles[layout].charCount}`}
     >
       {used} / {MAX_CHAT_INPUT_LENGTH}
@@ -239,24 +263,37 @@ export const ChatThread: React.FC<ChatThreadProps> = ({
       </ThreadPrimitive.Viewport>
 
       <div
-        className="tw-border-t tw-border-white/[0.08] tw-p-3 tw-shrink-0"
-        style={{backgroundColor: 'var(--color-site-dark)', ...composerStyle}}
+        className="tw-border-t tw-border-white/[0.08] tw-p-3 tw-shrink-0 tw-bg-site-dark"
+        style={composerStyle}
       >
         <ComposerPrimitive.Root
           className={`tw-flex tw-items-center tw-gap-2 tw-bg-site-input tw-border tw-border-white/[0.08] tw-rounded-3xl focus-within:tw-border-site-accent/50 tw-transition-colors tw-duration-150 ${shaking ? 'tw-animate-shake' : ''} ${styles[layout].composerPill}`}
           onAnimationEnd={() => setShaking(false)}
         >
           <ComposerPrimitive.Input
-            className={`tw-flex-1 tw-bg-transparent tw-border-none tw-outline-none tw-text-white/90 tw-leading-snug tw-resize-none tw-overflow-y-auto tw-py-0.5 placeholder:tw-text-white/35 ${styles[layout].composerInput}`}
+            className={`selection:tw-bg-site-accent-selection selection:tw-text-white tw-flex-1 tw-bg-transparent tw-border-none tw-outline-none tw-text-white/90 tw-leading-snug tw-resize-none tw-overflow-y-auto tw-py-0.5 placeholder:tw-text-white/35 ${styles[layout].composerInput}`}
             placeholder="Ask me anything..."
             maxLength={MAX_CHAT_INPUT_LENGTH}
             onKeyDown={handleKeyDown}
           />
-          <ComposerPrimitive.Send
-            className={`tw-rounded-full tw-bg-site-accent tw-text-white tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-shrink-0 tw-transition-all tw-duration-150 hover:tw-bg-site-accent-hover active:tw-scale-90 disabled:tw-bg-white/[0.08] disabled:tw-cursor-not-allowed disabled:tw-text-white/35 tw-outline-none ${styles[layout].sendButton}`}
-          >
-            <Send size={styles[layout].sendIconSize} strokeWidth={2.5} />
-          </ComposerPrimitive.Send>
+          <ThreadPrimitive.If running>
+            <ComposerPrimitive.Cancel
+              className={`tw-rounded-full tw-bg-white/[0.12] tw-text-white tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-shrink-0 tw-transition-all tw-duration-150 hover:tw-bg-white/20 active:tw-scale-90 tw-outline-none ${styles[layout].sendButton}`}
+            >
+              <Square
+                size={styles[layout].sendIconSize}
+                strokeWidth={2.5}
+                fill="currentColor"
+              />
+            </ComposerPrimitive.Cancel>
+          </ThreadPrimitive.If>
+          <ThreadPrimitive.If running={false}>
+            <ComposerPrimitive.Send
+              className={`tw-rounded-full tw-bg-site-accent tw-text-white tw-border-none tw-cursor-pointer tw-flex tw-items-center tw-justify-center tw-shrink-0 tw-transition-all tw-duration-150 hover:tw-bg-site-accent-hover active:tw-scale-90 disabled:tw-bg-white/[0.08] disabled:tw-cursor-not-allowed disabled:tw-text-white/35 tw-outline-none ${styles[layout].sendButton}`}
+            >
+              <Send size={styles[layout].sendIconSize} strokeWidth={2.5} />
+            </ComposerPrimitive.Send>
+          </ThreadPrimitive.If>
         </ComposerPrimitive.Root>
         <ComposerCharCount layout={layout} />
       </div>

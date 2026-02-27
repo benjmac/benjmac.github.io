@@ -7,7 +7,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "clean": "rm -f public/bundle.js public/bundle.js.LICENSE.txt public/style.css",
+    "clean": "rm -f public/bundle.js public/bundle.js.LICENSE.txt public/style.css && rm -rf node_modules/.cache",
     "build-client": "npm run clean && webpack",
     "build-client-watch": "NODE_ENV='development' webpack -w",
     "start": "serve public",

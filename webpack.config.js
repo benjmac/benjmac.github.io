@@ -1,6 +1,7 @@
 /** @type {import('webpack').Configuration} */
 const isDev = process.env.NODE_ENV === 'development';
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
   mode: isDev ? 'development' : 'production',
@@ -20,6 +21,14 @@ module.exports = {
   watchOptions: {
     ignored: /node_modules/,
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      // Injected at build time. Set CHAT_PROXY_URL in the environment before building for production.
+      __CHAT_PROXY_URL__: JSON.stringify(
+        process.env.CHAT_PROXY_URL ?? 'http://localhost:8787',
+      ),
+    }),
+  ],
   module: {
     rules: [
       {
