@@ -3,6 +3,22 @@ const isDev = process.env.NODE_ENV === 'development';
 const path = require('path');
 const webpack = require('webpack');
 
+require('dotenv').config({path: '.env'});
+
+const apiUrl = isDev ? process.env.API_URL_DEV : process.env.API_URL_PROD;
+if (!apiUrl)
+  throw new Error(
+    `${isDev ? 'API_URL_DEV' : 'API_URL_PROD'} is not set in .env`,
+  );
+
+const turnstileKey = isDev
+  ? process.env.TURNSTILE_KEY_DEV
+  : process.env.TURNSTILE_KEY_PROD;
+if (!turnstileKey)
+  throw new Error(
+    `${isDev ? 'TURNSTILE_KEY_DEV' : 'TURNSTILE_KEY_PROD'} is not set in .env`,
+  );
+
 module.exports = {
   mode: isDev ? 'development' : 'production',
   entry: [
@@ -23,10 +39,8 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      // Injected at build time. Set CHAT_PROXY_URL in the environment before building for production.
-      __CHAT_PROXY_URL__: JSON.stringify(
-        process.env.CHAT_PROXY_URL ?? 'http://localhost:8787',
-      ),
+      __API__: JSON.stringify(apiUrl),
+      __TURNSTILE_KEY__: JSON.stringify(turnstileKey),
     }),
   ],
   module: {

@@ -8,6 +8,19 @@ export interface ChatProxyMessage {
   content: string;
 }
 
+/** Top-level request body sent to the proxy worker. */
+export interface ChatProxyRequestBody {
+  messages: ChatProxyMessage[];
+}
+
+/** Callbacks held while a Turnstile challenge promise is in-flight. */
+export interface PendingTurnstileChallenge {
+  // eslint-disable-next-line no-unused-vars
+  resolve: (token: string) => void;
+  // eslint-disable-next-line no-unused-vars
+  reject: (err: unknown) => void;
+}
+
 /** A text block returned in the worker response. */
 export interface ChatProxyTextBlock {
   type: 'text';

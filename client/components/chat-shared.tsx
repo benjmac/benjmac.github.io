@@ -8,6 +8,10 @@ import {
 } from '@assistant-ui/react';
 import {Send, Square} from 'lucide-react';
 import {MAX_CHAT_INPUT_LENGTH} from '../constants/client-constants';
+import {
+  useTurnstileContainer,
+  useTurnstileVerifying,
+} from '../state/chat-runtime';
 
 export const OnlineIndicator: React.FC<{textOpacity?: string}> = ({
   textOpacity = 'tw-text-white/50',
@@ -144,7 +148,11 @@ interface AssistantMessageProps {
 
 export const AssistantMessage: React.FC<AssistantMessageProps> = ({layout}) => {
   const content = useAuiState((s) => s.message.content);
+  const status = useAuiState(
+    (s) => (s.message as {status?: {type: string}}).status,
+  );
   const [isNew, setIsNew] = React.useState(false);
+  const verifying = useTurnstileVerifying();
 
   const isEmpty =
     !content ||
@@ -162,6 +170,10 @@ export const AssistantMessage: React.FC<AssistantMessageProps> = ({layout}) => {
   }, [isEmpty]);
 
   const s = styles[layout];
+
+  // Don't show typing dots if Turnstile is pending (bot isn't thinking yet),
+  // or if the message completed with no content (cancelled/aborted run).
+  if (isEmpty && (verifying || status?.type === 'complete')) return <></>;
 
   return (
     <MessagePrimitive.Root className="tw-flex tw-flex-row tw-items-end tw-gap-2 tw-animate-fade-up">
@@ -227,6 +239,8 @@ export const ChatThread: React.FC<ChatThreadProps> = ({
   composerStyle,
 }) => {
   const [shaking, setShaking] = React.useState(false);
+  const turnstileContainer = useTurnstileContainer();
+  const verifying = useTurnstileVerifying();
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (
@@ -249,7 +263,23 @@ export const ChatThread: React.FC<ChatThreadProps> = ({
   );
 
   return (
-    <ThreadPrimitive.Root className="tw-flex-1 tw-flex tw-flex-col tw-overflow-hidden tw-bg-site-panel">
+    <ThreadPrimitive.Root className="tw-relative tw-flex-1 tw-flex tw-flex-col tw-overflow-hidden tw-bg-site-panel">
+      {verifying && (
+        <div className="tw-absolute tw-inset-0 tw-z-20 tw-bg-black/60 tw-backdrop-blur-sm" />
+      )}
+      {turnstileContainer && (
+        <div className="tw-absolute tw-inset-0 tw-z-30 tw-pointer-events-none tw-flex tw-items-center tw-justify-center">
+          <div
+            className={
+              verifying
+                ? 'tw-pointer-events-auto tw-bg-site-panel tw-border tw-border-white/[0.1] tw-rounded-2xl tw-p-5 tw-shadow-[0_8px_32px_rgba(0,0,0,0.6)]'
+                : 'tw-invisible'
+            }
+          >
+            <div ref={turnstileContainer} />
+          </div>
+        </div>
+      )}
       <ThreadPrimitive.Viewport
         className={`tw-flex-1 tw-overflow-y-auto tw-overscroll-contain tw-flex tw-flex-col tw-scroll-smooth tw-bg-site-panel [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.12)_transparent] ${styles[layout].viewport}`}
       >
@@ -275,6 +305,7 @@ export const ChatThread: React.FC<ChatThreadProps> = ({
             placeholder="Ask me anything..."
             maxLength={MAX_CHAT_INPUT_LENGTH}
             onKeyDown={handleKeyDown}
+            disabled={verifying}
           />
           <ThreadPrimitive.If running>
             <ComposerPrimitive.Cancel

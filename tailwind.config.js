@@ -7,6 +7,7 @@ module.exports = {
     './client/components/chat-desktop.tsx',
     './client/components/chat-shared.tsx',
     './client/components/sparkle-button.tsx',
+    './client/state/chat-runtime.tsx',
   ],
 
   // tw- prefix means zero collision with Semantic UI or any existing SCSS

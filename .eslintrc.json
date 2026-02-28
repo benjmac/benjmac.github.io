@@ -21,6 +21,10 @@
   },
   "extends": ["eslint:recommended", "plugin:react/recommended", "prettier"],
   "rules": {
+    "no-unused-vars": [
+      "error",
+      {"argsIgnorePattern": "^_", "varsIgnorePattern": "^_"}
+    ],
     "semi": ["error", "always"],
     "react/prop-types": 0,
     "react/no-unescaped-entities": 0,

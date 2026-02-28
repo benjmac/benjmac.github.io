@@ -7,7 +7,7 @@ import type {useSparkleEffect} from './sparkle-button';
 
 interface DesktopChatProps {
   sparkle: ReturnType<typeof useSparkleEffect>;
-  onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
+  onOpenChange: (_open: boolean) => void;
 }
 
 export const DesktopChat: React.FC<DesktopChatProps> = ({

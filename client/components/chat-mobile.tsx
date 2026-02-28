@@ -7,7 +7,7 @@ import type {useSparkleEffect} from './sparkle-button';
 
 interface MobileChatProps {
   sparkle: ReturnType<typeof useSparkleEffect>;
-  onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
+  onOpenChange: (_open: boolean) => void;
 }
 
 export const MobileChat: React.FC<MobileChatProps> = ({
