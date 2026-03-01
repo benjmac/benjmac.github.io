@@ -89,7 +89,7 @@ const styles = {
 } as const satisfies Record<Layout, Record<string, string | number>>;
 
 const AVATAR_CLASS =
-  'tw-w-14 tw-h-14 tw-rounded-full tw-overflow-hidden tw-shrink-0 tw-shadow-[0_4px_16px_rgba(74,127,255,0.35)]';
+  'tw-w-20 tw-h-20 tw-rounded-full tw-overflow-hidden tw-shrink-0 tw-shadow-[0_4px_16px_rgba(74,127,255,0.35)]';
 
 interface StarterPromptsProps {
   layout: Layout;
