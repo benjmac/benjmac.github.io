@@ -22,18 +22,11 @@ npm run prettify             # prettier on all source files
 npm run deploy
 ```
 
-Requires Node >= 24. Webpack bakes `__API__` and `__TURNSTILE_KEY__` at compile time from `.env` — build fails without those vars set.
+Requires Node >= 24. Webpack bakes environment variables at compile time from `.env` — build fails without those vars set.
 
 ## Environment Variables
 
-Create a `.env` file (not committed) with:
-
-```
-API_URL_DEV=<proxy worker URL for local dev>
-API_URL_PROD=<proxy worker URL for production>
-TURNSTILE_KEY_DEV=<Cloudflare Turnstile site key for dev>
-TURNSTILE_KEY_PROD=<Cloudflare Turnstile site key for prod>
-```
+Create a `.env` file (not committed) — see `.env.example` for the required keys.
 
 ## Architecture
 
@@ -53,28 +46,15 @@ TURNSTILE_KEY_PROD=<Cloudflare Turnstile site key for prod>
 
 **`ContentContextProvider`** (`client/state/content.tsx`) — wraps the app and exposes static portfolio data (skills, work experience) inlined from `shared/constants.ts`. No network requests.
 
-**`ChatRuntimeProvider`** (`client/state/chat-runtime.tsx`) — the more complex provider. It:
-
-- Wraps `@assistant-ui/react`'s `AssistantRuntimeProvider` with a custom `ChatModelAdapter`
-- Fingerprints the device via `@fingerprintjs/fingerprintjs` and sends `X-Device-ID` with each request
-- Manages the entire Cloudflare Turnstile challenge lifecycle (widget init, execute, cancel, abort) via a `TurnstileContext` consumed by chat components
-- Posts to the `__API__` proxy (a Cloudflare Worker in `ai-chat-proxy/`) which holds the actual Claude API key
+**`ChatRuntimeProvider`** (`client/state/chat-runtime.tsx`) — the more complex provider. It wraps `@assistant-ui/react`'s `AssistantRuntimeProvider` with a custom `ChatModelAdapter` and manages the bot protection challenge lifecycle via a `TurnstileContext` consumed by chat components.
 
 ### Chat Widget
 
-`ChatWidget` renders either `MobileChat` or `DesktopChat` (detected once at module load via `navigator.userAgent`). Both share the same `chat-shared.tsx` thread UI. Opening/closing the widget triggers Turnstile challenge cancellation.
+`ChatWidget` renders either `MobileChat` or `DesktopChat` (detected once at module load via `navigator.userAgent`). Both share the same `chat-shared.tsx` thread UI.
 
 ### Routing
 
 React Router v5 (`withRouter`) with four routes: `/about`, `/resume`, `/technical-skills`, `/work-experience`. Default redirect → `/about`.
-
-### AI Proxy
-
-The companion project at `/Users/benmccain/Desktop/apps/ai-chat-proxy` is a Cloudflare Worker that:
-
-- Receives `{ messages: ChatProxyMessage[] }` from this frontend
-- Validates the Turnstile token and enforces rate limits via device ID
-- Calls the Claude API and returns a `ChatProxySuccessResponse`
 
 ### Styling
 
@@ -88,8 +68,6 @@ The companion project at `/Users/benmccain/Desktop/apps/ai-chat-proxy` is a Clou
 **This is a public repository.** Security is the top priority in every change.
 
 - **Never commit secrets.** No API keys, tokens, `.env` files, or credentials — ever. All secrets live in `.env` (gitignored) and are injected at build time via webpack `DefinePlugin`.
-- **The frontend holds no secrets.** `__API__` and `__TURNSTILE_KEY__` are public-facing values baked into the bundle — treat them as such. The actual Anthropic API key lives only in the Cloudflare Worker environment.
-- **Validate on the backend, not just the client.** Client-side checks (e.g. `MAX_CHAT_INPUT_LENGTH`) are UX guards only. The proxy enforces all real limits.
 - **XSS.** Never use `dangerouslySetInnerHTML`. Never inject unsanitized user input into the DOM.
 - **Dependency hygiene.** Be cautious adding new dependencies to a public repo — prefer minimal, well-maintained packages.
 
@@ -103,32 +81,3 @@ The companion project at `/Users/benmccain/Desktop/apps/ai-chat-proxy` is a Clou
 ## API Contract
 
 Any change to what the frontend sends must be verified against the proxy worker (`ai-chat-proxy/src/index.ts`).
-
-**Request** — `POST __API__`
-
-```
-Headers:
-  Content-Type: application/json
-  X-Device-ID: <fingerprintjs visitorId>
-  X-Turnstile-Token: <Cloudflare Turnstile token>
-
-Body:
-  { "messages": Anthropic.MessageParam[] }
-  // MessageParam: { role: "user" | "assistant", content: string }
-```
-
-**Success response** — `200`
-
-```json
-{
-  "role": "assistant",
-  "content": [{"type": "text", "text": "..."}],
-  "stop_reason": "end_turn"
-}
-```
-
-**Error response** — `4xx/5xx`
-
-```json
-{"error": "<message>"}
-```
