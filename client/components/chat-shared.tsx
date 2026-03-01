@@ -12,6 +12,12 @@ import {
   useTurnstileContainer,
   useTurnstileVerifying,
 } from '../state/chat-runtime';
+import {
+  LinkCard,
+  extractUrls,
+  stripUrls,
+  getTextContent,
+} from './chat-link-card';
 
 export const OnlineIndicator: React.FC<{textOpacity?: string}> = ({
   textOpacity = 'tw-text-white/50',
@@ -45,8 +51,9 @@ const styles = {
     typingBubble:
       'tw-flex tw-items-center tw-gap-1.5 tw-py-3 tw-px-4 tw-bg-site-msg-bot tw-rounded-[16px] tw-rounded-bl-[4px]',
     typingDot: 'tw-w-2 tw-h-2 tw-rounded-full tw-bg-white/40 tw-animate-bounce',
+    msgColumn: 'tw-flex tw-flex-col tw-gap-1.5 tw-max-w-[82%]',
     botMsg:
-      'tw-text-[17px] tw-max-w-[82%] tw-px-4 tw-py-2.5 tw-bg-site-msg-bot tw-rounded-[16px] tw-rounded-bl-[4px] tw-text-white/90 tw-leading-relaxed tw-break-words',
+      'tw-text-[17px] tw-px-4 tw-py-2.5 tw-bg-site-msg-bot tw-rounded-[16px] tw-rounded-bl-[4px] tw-text-white/90 tw-leading-relaxed tw-break-words',
     charCount: 'tw-text-[13px]',
     viewport: 'tw-px-4 tw-py-4 tw-gap-4',
     composerPill: 'tw-pl-5 tw-pr-2 tw-py-2',
@@ -69,8 +76,9 @@ const styles = {
       'tw-flex tw-items-center tw-gap-1 tw-py-2.5 tw-px-3 tw-bg-site-msg-bot tw-rounded-[14px] tw-rounded-bl-[4px]',
     typingDot:
       'tw-w-1.5 tw-h-1.5 tw-rounded-full tw-bg-white/35 tw-animate-bounce',
+    msgColumn: 'tw-flex tw-flex-col tw-gap-1.5 tw-max-w-[78%]',
     botMsg:
-      'tw-text-[13.5px] tw-max-w-[78%] tw-px-3 tw-py-2 tw-bg-site-msg-bot tw-rounded-[14px] tw-rounded-bl-[4px] tw-text-white/90 tw-leading-relaxed tw-break-words',
+      'tw-text-[13.5px] tw-px-3 tw-py-2 tw-bg-site-msg-bot tw-rounded-[14px] tw-rounded-bl-[4px] tw-text-white/90 tw-leading-relaxed tw-break-words',
     charCount: 'tw-text-[11px]',
     viewport: 'tw-px-3 tw-py-4 tw-gap-3',
     composerPill: 'tw-pl-4 tw-pr-1.5 tw-py-1.5',
@@ -170,6 +178,7 @@ export const AssistantMessage: React.FC<AssistantMessageProps> = ({layout}) => {
   }, [isEmpty]);
 
   const s = styles[layout];
+  const urls = isEmpty ? [] : extractUrls(content);
 
   // Don't show typing dots if Turnstile is pending (bot isn't thinking yet),
   // or if the message completed with no content (cancelled/aborted run).
@@ -195,11 +204,16 @@ export const AssistantMessage: React.FC<AssistantMessageProps> = ({layout}) => {
           ))}
         </div>
       ) : (
-        <div
-          className={`${s.botMsg}${isNew ? ' tw-animate-msg-arrive' : ''}`}
-          onAnimationEnd={() => setIsNew(false)}
-        >
-          <MessagePrimitive.Content />
+        <div className={s.msgColumn}>
+          <div
+            className={`${s.botMsg}${isNew ? ' tw-animate-msg-arrive' : ''}`}
+            onAnimationEnd={() => setIsNew(false)}
+          >
+            {stripUrls(getTextContent(content))}
+          </div>
+          {urls.map((url) => (
+            <LinkCard key={url} url={url} layout={layout} />
+          ))}
         </div>
       )}
     </MessagePrimitive.Root>

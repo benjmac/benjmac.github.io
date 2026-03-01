@@ -271,7 +271,7 @@ export const ChatRuntimeProvider: React.FC<{children: React.ReactNode}> = ({
       sitekey: __TURNSTILE_KEY__,
       execution: 'execute',
       appearance: 'interaction-only',
-      theme: 'auto',
+      theme: 'dark',
       callback: (token) => {
         pendingRef.current?.resolve(token);
         pendingRef.current = null;
