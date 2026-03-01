@@ -1,9 +1,9 @@
-import React, {useContext} from 'react'
+import React, {useContext} from 'react';
 
-import {ContentContext} from '../state/content'
-import {Skill} from '../../types'
+import {ContentContext} from '../state/content';
+import {Skill} from '../../types';
 
-import '../styles/technoligies.scss'
+import '../styles/technoligies.scss';
 
 /**
  * SKILL IMAGE COMPONENT
@@ -16,17 +16,17 @@ export const skillContent = (skill: Skill) => {
       </a>
       <div className="skill-text">{skill.skillName}</div>
     </div>
-  )
-}
+  );
+};
 
 /**
  * SKILLS CONTAINER COMPONENT
  */
 export const TechnicalSkills = () => {
-  const contentValue = useContext(ContentContext)
+  const contentValue = useContext(ContentContext);
 
-  const {content} = contentValue
-  const {technoligiesAndSkills} = content
+  const {content} = contentValue;
+  const {technoligiesAndSkills} = content;
   return (
     <div className="ui main text container">
       <div className="skills-container">
@@ -46,7 +46,7 @@ export const TechnicalSkills = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default TechnicalSkills
+export default TechnicalSkills;

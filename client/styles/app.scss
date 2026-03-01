@@ -1,3 +1,17 @@
+// Color tokens — single source of truth for Tailwind, inline styles, and SCSS.
+:root {
+  --color-site-dark: #1b1c1d;
+  --color-site-panel: #212224;
+  --color-site-msg-bot: #2a2b2d;
+  --color-site-msg-user: #3d6bce;
+  --color-site-input: #2e2f31;
+  --color-site-accent: #4a7eff;
+  --color-site-accent-hover: #5a8fff;
+  --color-site-accent-selection: rgba(74, 127, 255, 0.45);
+  --color-site-online: #4caf82;
+  --color-site-online-glow: rgba(76, 175, 130, 0.6);
+}
+
 .app-container {
   height: 100%;
   overflow: auto;
@@ -5,5 +19,12 @@
 
   .content-body {
     padding-top: 7em;
+    height: inherit;
+    width: inherit;
   }
+}
+
+.routes-container {
+  height: 100%;
+  width: 100%;
 }

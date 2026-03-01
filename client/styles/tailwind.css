@@ -1,0 +1,42 @@
+/*
+ * Tailwind CSS — chat widget only.
+ *
+ * @tailwind base is intentionally omitted.
+ * Preflight (the CSS reset) would conflict with Semantic UI if injected globally.
+ * All classes are prefixed with `tw-` (see tailwind.config.js) so nothing
+ * outside the chat widget is ever affected.
+ */
+
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  /* Online presence indicator glow — references the CSS custom property from app.scss */
+  .tw-shadow-online-glow {
+    box-shadow: 0 0 6px var(--color-site-online-glow);
+  }
+
+  /* Sparkle particle text-shadow — blue accent glow for each radial particle */
+  .tw-text-shadow-sparkle {
+    text-shadow:
+      0 0 8px rgba(74, 127, 255, 1),
+      0 0 18px rgba(74, 127, 255, 0.6);
+  }
+
+  /* animation-fill-mode: both — keeps opacity:0 during animationDelay, prevents flash */
+  .tw-fill-mode-both {
+    animation-fill-mode: both;
+  }
+}
+
+/*
+ * iOS Safari (and all iOS browsers — they all use WebKit) zooms in on any
+ * input/textarea with font-size < 16px. This rule prevents that globally
+ * for touch devices without affecting desktop layout.
+ */
+@media (hover: none) and (pointer: coarse) {
+  input,
+  textarea {
+    font-size: 16px !important;
+  }
+}

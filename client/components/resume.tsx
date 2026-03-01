@@ -1,6 +1,6 @@
-import React from 'react'
+import React from 'react';
 
-import '../styles/resume.scss'
+import '../styles/resume.scss';
 
 /**
  * RESUME CONTAINER COMPONENT
@@ -17,7 +17,7 @@ export const Resume = () => {
         />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Resume
+export default Resume;

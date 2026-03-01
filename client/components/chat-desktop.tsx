@@ -1,0 +1,79 @@
+import React from 'react';
+import {AssistantModalPrimitive} from '@assistant-ui/react';
+import {MessageCircle, X} from 'lucide-react';
+
+import {ChatThread, OnlineIndicator} from './chat-shared';
+import type {useSparkleEffect} from './sparkle-button';
+
+interface DesktopChatProps {
+  sparkle: ReturnType<typeof useSparkleEffect>;
+  onOpenChange: (_open: boolean) => void;
+}
+
+export const DesktopChat: React.FC<DesktopChatProps> = ({
+  sparkle,
+  onOpenChange,
+}) => {
+  const {buttonRef, animClass, cssVars, sparkleOverlay, onMouseEnter, onClick} =
+    sparkle;
+
+  return (
+    <AssistantModalPrimitive.Root onOpenChange={onOpenChange}>
+      <AssistantModalPrimitive.Anchor className="tw-fixed tw-bottom-7 tw-right-7 tw-z-[999]">
+        <AssistantModalPrimitive.Trigger asChild>
+          <button
+            ref={buttonRef}
+            className={`tw-group tw-relative tw-w-[52px] tw-h-[52px] tw-rounded-full tw-bg-site-dark tw-border tw-border-white/10 tw-text-white/90 tw-cursor-pointer tw-flex tw-items-center tw-justify-center active:tw-scale-95 tw-outline-none ${animClass}`}
+            style={cssVars}
+            onMouseEnter={onMouseEnter}
+            onClick={onClick}
+            aria-label="Open assistant"
+          >
+            <span className="tw-absolute tw-flex tw-transition-all tw-duration-200 tw-group-data-[state=open]:tw-opacity-0 tw-group-data-[state=open]:tw-scale-50">
+              <MessageCircle size={22} />
+            </span>
+            <span className="tw-absolute tw-flex tw-opacity-0 tw-scale-50 tw-transition-all tw-duration-200 tw-group-data-[state=open]:tw-opacity-100 tw-group-data-[state=open]:tw-scale-100">
+              <X size={20} />
+            </span>
+            {sparkleOverlay}
+          </button>
+        </AssistantModalPrimitive.Trigger>
+      </AssistantModalPrimitive.Anchor>
+
+      <AssistantModalPrimitive.Content
+        className="tw-w-[360px] tw-h-[520px] tw-bg-site-panel tw-border tw-border-white/[0.08] tw-rounded-2xl tw-shadow-[0_8px_40px_rgba(0,0,0,0.6)] tw-flex tw-flex-col tw-overflow-hidden tw-z-[1000] data-[state=open]:tw-animate-panel-in data-[state=closed]:tw-animate-panel-out"
+        side="top"
+        align="end"
+        sideOffset={12}
+      >
+        <div className="tw-bg-site-dark tw-border-b tw-border-white/[0.08] tw-px-4 tw-py-3 tw-shrink-0 tw-shadow-[0_1px_8px_rgba(0,0,0,0.3)]">
+          <div className="tw-flex tw-items-center tw-gap-2.5">
+            <div className="tw-w-9 tw-h-9 tw-rounded-full tw-overflow-hidden tw-shrink-0">
+              <img
+                src="images/mokka.png"
+                alt="Mokka"
+                className="tw-w-full tw-h-full tw-object-cover"
+              />
+            </div>
+            <div className="tw-flex-1">
+              <div className="tw-text-sm tw-font-semibold tw-text-white/90 tw-leading-tight">
+                Mokka
+              </div>
+              <OnlineIndicator textOpacity="tw-text-white/50" />
+            </div>
+            <AssistantModalPrimitive.Trigger asChild>
+              <button
+                className="tw-flex tw-items-center tw-justify-center tw-w-7 tw-h-7 tw-rounded-full tw-text-white/60 hover:tw-text-white/90 hover:tw-bg-white/[0.08] tw-transition-all tw-duration-150 tw-outline-none tw-border-none tw-bg-transparent tw-cursor-pointer"
+                aria-label="Close assistant"
+              >
+                <X size={16} />
+              </button>
+            </AssistantModalPrimitive.Trigger>
+          </div>
+        </div>
+
+        <ChatThread layout="desktop" />
+      </AssistantModalPrimitive.Content>
+    </AssistantModalPrimitive.Root>
+  );
+};

@@ -1,87 +1,81 @@
-import React, {useState} from 'react'
-import {Link, useLocation} from 'react-router-dom'
+import React, {useState, useEffect} from 'react';
+import {Link, useLocation} from 'react-router-dom';
 
-import sizeMe, {SizeMeProps} from 'react-sizeme'
+import {Menu, Dropdown} from 'semantic-ui-react';
 
-import {Menu, Dropdown} from 'semantic-ui-react'
+const useWindowWidth = () => {
+  const [width, setWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  return width;
+};
 
-import constants from '../constants/client-constants'
+import constants from '../constants/client-constants';
 
-import '../styles/menu.scss'
+import '../styles/menu.scss';
 
 const setDefault = () => {
-  const menuItems = constants.menuItems
-  const routes = constants.routes
+  const menuItems = constants.menuItems;
+  const routes = constants.routes;
   // Current route location
-  const location = useLocation()
-  let defaultItem
+  const location = useLocation();
+  let defaultItem;
   switch (location.pathname) {
     case routes.aboutMe:
-      defaultItem = menuItems.aboutMe
-      break
+      defaultItem = menuItems.aboutMe;
+      break;
     case routes.resume:
-      defaultItem = menuItems.resume
-      break
+      defaultItem = menuItems.resume;
+      break;
     case routes.technicalSkills:
-      defaultItem = menuItems.technicalSkills
-      break
+      defaultItem = menuItems.technicalSkills;
+      break;
     case routes.workExperience:
-      defaultItem = menuItems.workExperience
-      break
+      defaultItem = menuItems.workExperience;
+      break;
 
     default:
-      defaultItem = menuItems.aboutMe
+      defaultItem = menuItems.aboutMe;
   }
 
-  return defaultItem
-}
+  return defaultItem;
+};
 
-export const MenuStackable: React.FC<SizeMeProps> = ({size}) => {
+export const MenuStackable: React.FC = () => {
+  const width = useWindowWidth();
   // Menu items refs
-  const menuItems = constants.menuItems
+  const menuItems = constants.menuItems;
   // Links refs
-  const routes = constants.routes
+  const routes = constants.routes;
 
   // Sets default menu item based upon route on load
-  let defaultItem = setDefault()
+  let defaultItem = setDefault();
 
-  const [activeItem, setActiveItem] = useState(defaultItem)
+  const [activeItem, setActiveItem] = useState(defaultItem);
 
-  const [showNavMenu, setShowNavMenu] = useState(false)
+  const [showNavMenu, setShowNavMenu] = useState(false);
 
   // Sets flag to show tool bar or not
   const toolBarClicked = () => {
-    setShowNavMenu(!showNavMenu)
-  }
-
-  const scrollToTop = () => {
-    if (window.scrollTo) {
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: 'smooth',
-      })
-    } else {
-      window.scrollY = 0
-      window.scrollX = 0
-    }
-  }
+    setShowNavMenu(!showNavMenu);
+  };
 
   const invertedMenuItemSelected = (item: string) => {
-    setActiveItem(item)
-    scrollToTop()
-  }
+    setActiveItem(item);
+  };
 
   // Sets active item in tool bar and then hides show menu
   const sideBarItemSelected = (item: string) => {
-    setActiveItem(item)
-    setShowNavMenu(false)
-    scrollToTop()
-  }
+    setActiveItem(item);
+    setShowNavMenu(false);
+  };
 
   return (
     <div>
-      {size?.width != null && size.width > constants.shiftMaxWidth ? (
+      {width > constants.shiftMaxWidth ? (
         <div className="ui fixed inverted menu">
           <div className="ui container">
             <Menu.Item
@@ -130,11 +124,7 @@ export const MenuStackable: React.FC<SizeMeProps> = ({size}) => {
             >
               Resume
             </Menu.Item>
-            <Menu.Item
-              className="custom-icon"
-              position="right"
-              style={{padding: 0}}
-            >
+            <Menu.Item className="custom-icon" position="right">
               <a
                 target="_blank"
                 rel="noreferrer"
@@ -143,7 +133,7 @@ export const MenuStackable: React.FC<SizeMeProps> = ({size}) => {
                 <img src="linkedin.png" />
               </a>
               <a
-                style={{marginLeft: '10px', marginRight: '10px'}}
+                className="custom-icon-github"
                 target="_blank"
                 rel="noreferrer"
                 href="https://github.com/benjmac"
@@ -201,11 +191,7 @@ export const MenuStackable: React.FC<SizeMeProps> = ({size}) => {
                 <div />
               )}
             </Dropdown>
-            <Menu.Item
-              className="custom-icon"
-              position="right"
-              style={{padding: 0}}
-            >
+            <Menu.Item className="custom-icon" position="right">
               <a
                 target="_blank"
                 rel="noreferrer"
@@ -214,7 +200,7 @@ export const MenuStackable: React.FC<SizeMeProps> = ({size}) => {
                 <img src="linkedin.png" />
               </a>
               <a
-                style={{marginLeft: '10px', marginRight: '10px'}}
+                className="custom-icon-github"
                 target="_blank"
                 rel="noreferrer"
                 href="https://github.com/benjmac"
@@ -226,7 +212,7 @@ export const MenuStackable: React.FC<SizeMeProps> = ({size}) => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default sizeMe()(MenuStackable)
+export default MenuStackable;

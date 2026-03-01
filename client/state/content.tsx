@@ -1,13 +1,13 @@
-import React, {createContext, useState} from 'react'
-import {content as initialContent} from '../../shared/constants'
-import {Content, ContentContextValue} from '../../types'
+import React, {createContext, useState} from 'react';
+import {content as initialContent} from '../../shared/constants';
+import {Content, ContentContextValue} from '../../types';
 
 /**
  * DEFINE CONTEXT
  */
 export const ContentContext = createContext<ContentContextValue>(
   {} as ContentContextValue,
-)
+);
 
 /**
  * CONTENT PROVIDER
@@ -16,11 +16,11 @@ export const ContentContext = createContext<ContentContextValue>(
 export const ContentContextProvider: React.FC<{children: React.ReactNode}> = ({
   children,
 }) => {
-  const [content] = useState<Content>(initialContent)
+  const [content] = useState<Content>(initialContent);
 
   return (
     <ContentContext.Provider value={{content}}>
       {children}
     </ContentContext.Provider>
-  )
-}
+  );
+};
