@@ -52,6 +52,19 @@ export const AboutMe = () => {
         driven by the idea that bettering the environment for the engineer
         ultimately results in a better product for the world.
       </p>
+
+      <p className="about-text">
+        That same conviction now shapes my work at Betterment, where I continue
+        to focus on developer experience and internal systems. I’m deeply
+        invested in creating a seamless, efficient, and empowering environment
+        for engineers, recognizing that the tools and processes we build
+        directly influence the quality of the products we deliver. My work is
+        guided by the principle that when engineers are equipped with the right
+        resources and support, they can innovate more freely, solve problems
+        more effectively, and ultimately contribute to a more robust and
+        user-centric product.
+      </p>
+
       <p className="about-text">
         I’ve discovered that I’m at my best where product engineering meets
         organizational scale, collaborating across teams to build the impactful,

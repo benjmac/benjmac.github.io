@@ -216,6 +216,13 @@ const technoligiesAndSkills: TechnologiesAndSkills = {
 
 const workExperience: WorkExperienceItem[] = [
   {
+    image: 'images/betterment.png',
+    header: 'Betterment, Senior Software Engineer - SRE Developer Experience',
+    meta: 'Apr. 2026 - Present',
+    extra: 'New York, NY',
+    bullets: [],
+  },
+  {
     image: 'images/peloton.png',
     header:
       'Peloton Interactive, Senior Software Engineer - SRE Developer Experience',
